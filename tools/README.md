@@ -19,4 +19,8 @@ ones contained in an old file, and identifies and ouputs the novel loci.
 
 **Example**
 ```
-sh identify_novel_loci.sh [mood_bip_loci_cond_001.csv](https://github.com/precimed/yunhoop/blob/master/config/mood_bip_loci_cond_001.csv) [mood_gwas_loci.csv](https://github.com/precimed/yunhoop/blob/master/config/mood_gwas_loci.csv) novel_loci_cond_001_mood_bip.txt
+sh identify_novel_loci.sh mood_bip_loci_cond_001.csv mood_gwas_loci.csv novel_loci_cond_001_mood_bip.txt
+
+mood_bip_loci_cond_001.csv: https://github.com/precimed/yunhoop/blob/master/config/mood_bip_loci_cond_001.csv
+mood_gwas_loci.csv: https://github.com/precimed/yunhoop/blob/master/config/mood_gwas_loci.csv
+```
