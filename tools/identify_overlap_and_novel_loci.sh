@@ -57,12 +57,14 @@ cat $files | awk '{print $1,$2,$3}' | sort | uniq | while read line; do
 done
 
 sed -i ':a;N;/\n$/!s/\n/; /;ta;P;d' $outprefix.tmp
-cat $outprefix.tmp | sort | uniq | awk '{ print length, $0 }' | sort -n -r | cut -d' ' -f2- | sed 's/$/\n/' | sed 's/; /\n/g' > $outprefix.tmp2
-grep $1 $outprefix.tmp2 | cut -d' ' -f2- | sed 's/ /	/g' | sort | uniq > $outprefix.tmp
+cat $outprefix.tmp | sort | uniq | awk '{ print length, $0 }' | sort -n -r | cut -d' ' -f2- | sed 's/$/\n/' | sed 's/; /\n/g' > ${outprefix}_group_loci.txt
+
+grep $1 ${outprefix}_group_loci.txt | cut -d' ' -f2- | sed 's/ /	/g' | sort | uniq > $outprefix.tmp
 cat $1 | sed 's/ /	/g' | sort > $1.tmp
 diff $1.tmp $outprefix.tmp | grep \< | cut -d' ' -f2- | sort -n > ${outprefix}_novel_loci.txt
 sort -n $outprefix.tmp > ${outprefix}_overlap_loci.txt
-rm -f $outprefix.tmp* $1.tmp
+rm -f $outprefix.tmp $1.tmp
+rm -f ${outprefix}_group_loci.txt
 
 echo "Done"
 echo "Overlapping loci are saved in ${outprefix}_overlap_loci.txt"
