@@ -44,6 +44,5 @@ locus is considered unnovel.
 **Example**
 ```
 sh check_loci_in_gwasc.sh PGC_BIP_2016_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snps.csv snp2gene/BIP_vs_MOOD_conj_005/gwascatalog.txt bipolar
-
 sh check_loci_in_gwasc.sh PGC_MDD_2018_with23andMe_noUKBB_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snps.csv snp2gene/MDD_vs_MOOD_conj_005/gwascatalog.txt depress
 ```
