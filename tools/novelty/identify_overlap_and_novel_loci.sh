@@ -5,7 +5,7 @@
 # ones contained in an old file, and identifies and ouputs the overlapping
 # and novel loci.
 
-# Authors: Yunhan Chu (yunhanch@gmail.com), Guy Frederick Lanyon Hindley
+# Authors: Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 # Contributors: Guy, Kevin, Shahram, Naz, Weiqiu, et al.
 
 # (c) 2020-2022 NORMENT, UiO
