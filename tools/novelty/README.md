@@ -37,7 +37,7 @@ locus is considered unnovel.
 **Usage** ``sh check_loci_in_gwasc.sh cfdr_clump_snps_file fuma_gwascatalog_file keyword``
 
 **Arguments**
-* `cfdr_clump_snps_file` - file that contains snp info from clumping
+* `cfdr_clump_snps_file` - file that contains snp info from cfdr clumping
 * `fuma_gwascatalog_file` - file that contains gwascatalog info from FUMA
 * `keyword` - keyword such as name of part of the name of investigated trait
 
