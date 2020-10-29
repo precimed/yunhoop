@@ -1,6 +1,7 @@
 ## Contents
 
 * [identify_overlap_and_novel_loci.sh](#identify_overlap_and_novel_locish)
+* [check_loci_in_gwasc.sh](#check_loci_in_gwascsh)
 
 ## Summary of scripts
 
@@ -30,8 +31,8 @@ mood_gwas_loci.csv: https://github.com/precimed/yunhoop/blob/master/config/mood_
 
 **Function**
 This script checks whether the loci reported by cfdr analysis have been
-registed in gwascatalog with respect to specific phenotype, if so the loci
-is not regarded as novel loci.
+registered in gwascatalog with respect to specific phenotype, if so the
+locus is considered unnovel.
 
 **Usage** ``sh check_loci_in_gwasc.sh cfdr_clump_snps_file fuma_gwascatalog_file keyword``
 

@@ -2,8 +2,8 @@
 #--------------------------- Description ---------------------------------#
 
 # This script checks whether the loci reported by cfdr analysis have been
-# registed in gwascatalog with respect to specific phenotype, if so the
-# loci is not regarded as novel loci.
+# registered in gwascatalog with respect to specific phenotype, if so the
+# locus is considered unnovel.
 
 # Authors: Yunhan Chu (yunhanch@gmail.com), Weiqiu Cheng, Guy F. L. Hindley
 
