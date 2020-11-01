@@ -3,7 +3,7 @@
 
 # This script compares latest loci contained in a new file against previous
 # ones contained in an old file, and identifies and ouputs the overlapping
-# and novel loci.
+# and novel loci, but WITHOUT ANY WARRANTY.
 
 # Authors: Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 # Contributors: Guy, Kevin, Shahram, Naz, Weiqiu, et al.

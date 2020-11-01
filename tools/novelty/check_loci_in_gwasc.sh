@@ -3,7 +3,7 @@
 
 # This script checks whether the loci reported by cfdr analysis have been
 # registered in gwascatalog with respect to specific phenotype, if so the
-# loci are considered unnovel.
+# loci are considered unnovel, but WITHOUT ANY WARRANTY.
 
 # Authors: Yunhan Chu (yunhanch@gmail.com), Weiqiu Cheng, Guy F. L. Hindley
 
