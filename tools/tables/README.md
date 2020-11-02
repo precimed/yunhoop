@@ -1,9 +1,34 @@
 ## Contents
 
+* [mixer_uni_table.sh](#mixer_uni_tablesh)
+* [mixer_bi_table.sh](#mixer_bi_tablesh)
 * [fdr_fuma_snp_table.sh](#fdr_fuma_snp_tablesh)
 * [fdr_fuma_loci_table.sh](#fdr_fuma_loci_tablesh)
+* [fuma_genes_table.sh](#fuma_genes_tablesh)
 
 ## Summary of scripts
+
+### mixer_uni_table.sh
+
+**Function**
+This script extracts data from mixer analysis for supplementary univariate
+table.
+
+**Usage** ``sh mixer_uni_table.sh uni_csv``
+
+**Arguments**
+* `uni_csv` - csv file containing univariate info
+
+### mixer_bi_table.sh
+
+**Function**
+This script extracts data from mixer analysis for supplementary bivariate
+table.
+
+**Usage** ``sh mixer_bi_table.sh bi_csv``
+
+**Arguments**
+* `bi_csv` - csv file containing bivariate info
 
 ### fdr_fuma_snp_table.sh
 

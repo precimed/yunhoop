@@ -4,7 +4,6 @@
 # This script generates data for supplementary genes table based on FUMA
 # analysis, but WITHOUT ANY WARRANTY.
 
-# Authors: Yunhan Chu (yunhanch@gmail.com)
 # (c) 2020-2022 NORMENT, UiO
 #-------------------------------------------------------------------------#
 

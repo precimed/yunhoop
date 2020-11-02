@@ -5,7 +5,6 @@
 # based on selected snp subset (fdr,r2) from cFDR/FUMA analysis, but WITHOUT
 # ANY WARRANTY.
 
-# Authors: Yunhan Chu (yunhanch@gmail.com)
 # (c) 2020-2022 NORMENT, UiO
 #-------------------------------------------------------------------------#
 
