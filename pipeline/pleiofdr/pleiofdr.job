@@ -10,7 +10,8 @@ module purge
 module load MATLAB/2019a
 module load Python/2.7.15-intel-2018b
 module load PLINK/1.9b_6.13-x86_64
-set -o errexit
+set -o errexit # exit the scripts on any error
+set -o nounset # exit the scripts on unset variables
 
 # **************************************************************
 

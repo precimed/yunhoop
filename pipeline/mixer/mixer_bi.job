@@ -20,7 +20,8 @@
 ## Set up job environment:
 #source /cluster/bin/jobsetup
 module purge   # clear any inherited modules
-set -o errexit # exit on errors
+set -o errexit # exit the scripts on any error
+set -o nounset # exit the scripts on unset variables
 
 module load Boost/1.71.0-GCC-8.3.0
 module load Python/3.7.4-GCCcore-8.3.0
