@@ -4,9 +4,11 @@
 # This script generates data for supplementary loci table (cFDR+FUMA+SUMSTAT)
 # from cFDR/FUMA analysis, but WITHOUT ANY WARRANTY.
 
-# (c) 2020-2022 NORMENT, UiO
-#-------------------------------------------------------------------------#
+# Yunhan Chu (yunhanch@gmail.com)
 
+# (c) 2020-2022 NORMENT, UiO
+
+#-------------------------------------------------------------------------#
 if [ $# -lt 3 ]; then
   echo "Usage:     sh fdr_fuma_loci_table.sh cfdr_clump_loci_file fdr_fuma_snp_table outfolder"
   echo "Arguments: cfdr_clump_loci_file - file that contains cfdr clumping loci info"
@@ -15,6 +17,7 @@ if [ $# -lt 3 ]; then
   echo "Example:   sh fdr_fuma_loci_table.sh PGC_BIP_2016_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.loci.csv snp2gene/BIP_vs_MOOD_snps_conj.txt snp2gene"
   exit 0
 fi
+#-------------------------------------------------------------------------#
 
 cfdr_clump_loci_file=$1
 fdr_fuma_snp_table=$2

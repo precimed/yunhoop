@@ -5,9 +5,11 @@
 # based on selected snp subset (fdr,r2) from cFDR/FUMA analysis, but WITHOUT
 # ANY WARRANTY.
 
-# (c) 2020-2022 NORMENT, UiO
-#-------------------------------------------------------------------------#
+# Yunhan Chu (yunhanch@gmail.com)
 
+# (c) 2020-2022 NORMENT, UiO
+
+#-------------------------------------------------------------------------#
 if [ $# -lt 7 ]; then
   echo "Usage:     sh fdr_fuma_snp_table.sh cfdr_clump_snp_file fdr r2 fuma_snp_file sumstat1 sumstat2 outfolder"
   echo "Arguments: cfdr_clump_snp_file - file that contains cfdr clumping snp info"
@@ -20,6 +22,7 @@ if [ $# -lt 7 ]; then
   echo "Example:   sh fdr_fuma_snp_table.sh PGC_BIP_2016_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snps.csv 0.1 0.6 snp2gene/BIP_vs_MOOD_conj_005/snps.txt sumstat/std/PGC_BIP_2016.sumstats.gz sumstat/std/UKB_MOOD_2019.sumstats.gz snp2gene"
   exit 0
 fi
+#-------------------------------------------------------------------------#
 
 cfdr_clump_snp_file=$1
 fdr=$2

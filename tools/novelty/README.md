@@ -17,7 +17,7 @@ and novel loci.
 **Arguments**
 * `newlocifile` - file that contains new loci with 3 or 4 columns (CHR, MinBP, MaxBP, [LeadSNP])
 * `oldlocifile` - file that contains old loci with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP])
-* `outprefix`   - prefix of the output files that contain overlapping and novel loci
+* `outprefix` - prefix of the output files that contain overlapping and novel loci
 
 **Example**
 ```

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Job name:
+#SBATCH --job-name=mixer
+#
+# Project:
+#SBATCH --account=nn9114k
+#
+# Wall clock limit:
+#SBATCH --time=1-00:00:00
+#
+#SBATCH --cpus-per-task=20
+
+# Max memory usage:
+#SBATCH --mem-per-cpu=4600M
+
+# Job array specification
+#SBATCH --array=1-20
+
+## Set up job environment:
+#source /cluster/bin/jobsetup
+module purge   # clear any inherited modules
+set -o errexit # exit on errors
+
+module load Boost/1.71.0-GCC-8.3.0
+module load Python/3.7.4-GCCcore-8.3.0
+
+mkdir -p ${OUTDIR}/$TRAIT
+
+python3 $MIXER_ROOT/precimed/mixer.py fit1 \
+      --trait1-file $SUMSTAT/$TRAIT.sumstats.gz \
+      --out ${OUTDIR}/$TRAIT/$TRAIT.fit.rep${SLURM_ARRAY_TASK_ID} \
+      --bim-file $BIMFILE --ld-file $LDFILE \
+      --lib $MIXER_ROOT/src/build/lib/libbgmg.so --threads 20 \
+      --extract $EXTRACT
+
+python3 $MIXER_ROOT/precimed/mixer.py test1 \
+      --trait1-file $SUMSTAT/$TRAIT.sumstats.gz \
+      --load-params-file $OUTDIR/$TRAIT/$TRAIT.fit.rep${SLURM_ARRAY_TASK_ID}.json \
+      --out ${OUTDIR}/$TRAIT/$TRAIT.test.rep${SLURM_ARRAY_TASK_ID} \
+      --lib $MIXER_ROOT/src/build/lib/libbgmg.so --threads 20 \
+      --bim-file $BIMFILE --ld-file $LDFILE

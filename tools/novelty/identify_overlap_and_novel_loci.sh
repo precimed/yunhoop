@@ -9,6 +9,7 @@
 # Contributors: Guy, Kevin, Shahram, Naz, Weiqiu, et al.
 
 # (c) 2020-2022 NORMENT, UiO
+
 #-------------------------------------------------------------------------#
 
 if [ $# -lt 3 ]; then
@@ -19,6 +20,8 @@ if [ $# -lt 3 ]; then
   echo "Example:   sh identify_overlap_and_novel_loci.sh mood_bip_loci_cond_001.csv mood_gwas_loci.csv mood_bip_cond_001"
   exit 0
 fi
+
+#-------------------------------------------------------------------------#
 
 if [ ! -f $1 ]; then
     echo ""

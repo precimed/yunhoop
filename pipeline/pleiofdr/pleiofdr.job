@@ -15,7 +15,7 @@ set -o errexit
 # **************************************************************
 
 # configuration file
-configfile=$pleiofdr/config.txt
+configfile=config.txt
 
 if [ ! -s $configfile ]; then
     cp $pleiofdr/config_default.txt $configfile
@@ -29,12 +29,17 @@ trait1name=${trait1_array[1]}
 IFS='_' read -r -a trait2_array <<< "$trait2file"
 trait2name=${trait2_array[1]}
 
+if [ -z $manh_colorlist ]; then
+    manh_colorlist="[1 0 0]"
+fi
+
 # replace the variables
 sed -i -e "/traitfolder=/c\traitfolder=$traitfolder" \
     -i -e "/traitfile1=/c\traitfile1=$trait1file" \
     -i -e "/traitname1=/c\traitname1=$trait1name" \
     -i -e "/traitfiles=/c\traitfiles={\'$trait2file\'}" \
     -i -e "/traitnames=/c\traitnames={\'$trait2name\'}" \
+    -i -e "/manh_colorlist=/c\manh_colorlist=$manh_colorlist" \
     -i -e "/reffile=/c\reffile=$ref_fdr" $configfile
 
 mkdir -p $resultfolder
@@ -61,7 +66,7 @@ if [ "$run_conjfdr_flag" = "Y" ]; then
     matlab -nodisplay -nodesktop -r "run $pleiofdr/runme.m; exit"
 fi
 
-if [ "$run_condfdr_flag" = "Y" ] && [ "$run_clump_flag" = "Y" ]; then
+if [ "$run_clump_cond_flag" = "Y" ]; then
     # convert result.mat to result.mat.csv
     python $python_convert/fdrmat2csv.py $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/result.mat $ref_mat2csv
 
@@ -76,7 +81,7 @@ if [ "$run_condfdr_flag" = "Y" ] && [ "$run_clump_flag" = "Y" ]; then
         --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/cond.result.clump
 fi
 
-if [ "$run_conjfdr_flag" = "Y" ] && [ "$run_clump_flag" = "Y" ]; then
+if [ "$run_clump_conj_flag" = "Y" ]; then
     # convert result.mat to result.mat.csv
     python $python_convert/fdrmat2csv.py $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_conjfdr/result.mat $ref_mat2csv
 

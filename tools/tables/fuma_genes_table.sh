@@ -4,9 +4,11 @@
 # This script generates data for supplementary genes table based on FUMA
 # analysis, but WITHOUT ANY WARRANTY.
 
-# (c) 2020-2022 NORMENT, UiO
-#-------------------------------------------------------------------------#
+# Yunhan Chu (yunhanch@gmail.com)
 
+# (c) 2020-2022 NORMENT, UiO
+
+#-------------------------------------------------------------------------#
 if [ $# -lt 2 ]; then
   echo "Usage:     sh fuma_genes_table.sh fuma_genes_file outfile"
   echo "Arguments: fuma_genes_file - file that contains fuma genes info"
@@ -14,6 +16,7 @@ if [ $# -lt 2 ]; then
   echo "Example:   sh fuma_genes_table.sh snp2gene/BIP_vs_MOOD_conj_005/genes.txt snp2gene/BIP_vs_MOOD_genes.txt"
   exit 0
 fi
+#-------------------------------------------------------------------------#
 
 fuma_genes_file=$1
 outfile=$2

@@ -8,6 +8,7 @@
 # Authors: Yunhan Chu (yunhanch@gmail.com), Weiqiu Cheng, Guy F. L. Hindley
 
 # (c) 2020-2022 NORMENT, UiO
+
 #-------------------------------------------------------------------------#
 
 if [ $# -lt 3 ]; then
@@ -19,6 +20,8 @@ if [ $# -lt 3 ]; then
   echo "Example: sh check_loci_in_gwasc.sh PGC_MDD_2018_with23andMe_noUKBB_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snps.csv snp2gene/MDD_vs_MOOD_conj_005/gwascatalog.txt depress"
   exit 0
 fi
+
+#-------------------------------------------------------------------------#
 
 cfdr_snps=$1
 gwasc=$2
