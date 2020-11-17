@@ -34,4 +34,4 @@ export EXTRACT=/cluster/projects/nn9114k/yunhanc/data/ref/LDSR/1000G_EUR_Phase3_
 
 #-------------------------------------------------------------------------#
 
-sbatch mixer_bi.job
+sbatch $(dirname $0)/mixer_bi.job

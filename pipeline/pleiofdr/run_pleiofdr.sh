@@ -31,6 +31,9 @@ fi
 
 #--------------------------parameters to cumtomize------------------------#
 
+#home directory of pipeline pleioFDR
+export pipeline=/cluster/projects/nn9114k/yunhanc/github/yunhoop/pipeline/pleiofdr
+
 #home directory of pleioFDR
 export pleiofdr=/cluster/projects/nn9114k/yunhanc/github/pleiofdr
 
@@ -84,7 +87,7 @@ export manh_colorlist=$8
 #-------------------------------------------------------------------------#
 
 if [ "$run_on_cluster_flag" = "Y" ]; then
-    sbatch --account $jobaccount pleiofdr.job
+    sbatch --account $jobaccount $pipeline/pleiofdr.job
 else
-    sh pleiofdr.job
+    sh $pipeline/pleiofdr.job
 fi

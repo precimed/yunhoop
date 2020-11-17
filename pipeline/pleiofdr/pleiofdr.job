@@ -16,7 +16,7 @@ set -o nounset # exit the scripts on unset variables
 # **************************************************************
 
 # configuration file
-configfile=config.txt
+configfile=$pipeline/config.txt
 
 if [ ! -s $configfile ]; then
     cp $pleiofdr/config_default.txt $configfile
