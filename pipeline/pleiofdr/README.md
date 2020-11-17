@@ -12,12 +12,12 @@ values to the parameters within the "parameters to cumtomize" section
 according to your environment the first time you run it.
 Note: The config.txt under the pipeline home directory is applied, with
 following default configuration:
-exclude_chr_pos=[6 25119106 33854733; 8 7200000 12500000]
-randprune_n=100
+exclude_chr_pos=[6 25119106 33854733; 8 7200000 12500000],
+randprune_n=100,
 please customize corresponding parameters if different settings needed.
 By default, the script runs 0.05 threshold for conjFDR, if 0.01 is needed,
-please change following parameters in pleiofdr.job to be 0.01
-fdrthresh=0.05
+please change following parameters in pleiofdr.job to be 0.01:
+fdrthresh=0.05,
 clump-p1 0.05
 
 **Usage** ``sh run_pleiofdr.sh TRAIT1 TRAIT2 run_condfdr_flag run_conjfdr_flag run_clump_cond_flag run_clump_conj_flag run_on_cluster_flag [manh_colorlist]``
