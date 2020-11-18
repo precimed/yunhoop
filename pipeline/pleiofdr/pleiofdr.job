@@ -15,12 +15,7 @@ set -o nounset # exit the scripts on unset variables
 
 # **************************************************************
 
-# configuration file
-configfile=$pipeline/config.txt
-
-if [ ! -s $configfile ]; then
-    cp $pleiofdr/config_default.txt $configfile
-fi
+mkdir -p $resultfolder
 
 # reading trait1
 IFS='_' read -r -a trait1_array <<< "$trait1file"
@@ -29,6 +24,16 @@ trait1name=${trait1_array[1]}
 # reading trait2
 IFS='_' read -r -a trait2_array <<< "$trait2file"
 trait2name=${trait2_array[1]}
+
+# configuration file
+configfile=$resultfolder/config_${trait1name}_${trait2name}.txt
+
+if [ ! -s $pipeline/config.txt ]; then
+    cp $pipeline/config.txt $configfile
+else
+    echo "please set correct path to the pipeline variable."
+    exit 1
+fi
 
 if [ -z $manh_colorlist ]; then
     manh_colorlist="[1 0 0]"
@@ -42,8 +47,6 @@ sed -i -e "/traitfolder=/c\traitfolder=$traitfolder" \
     -i -e "/traitnames=/c\traitnames={\'$trait2name\'}" \
     -i -e "/manh_colorlist=/c\manh_colorlist=$manh_colorlist" \
     -i -e "/reffile=/c\reffile=$ref_fdr" $configfile
-
-mkdir -p $resultfolder
 
 # For cond_FDR
 if [ "$run_condfdr_flag" = "Y" ]; then
