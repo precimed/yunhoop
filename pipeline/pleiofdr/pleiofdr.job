@@ -28,15 +28,11 @@ trait2name=${trait2_array[1]}
 # configuration file
 configfile=$resultfolder/config_${trait1name}_${trait2name}.txt
 
-if [ ! -s $pipeline/config.txt ]; then
+if [ -s $pipeline/config.txt ]; then
     cp $pipeline/config.txt $configfile
 else
     echo "please set correct path to the pipeline variable."
     exit 1
-fi
-
-if [ -z $manh_colorlist ]; then
-    manh_colorlist="[1 0 0]"
 fi
 
 # replace the variables

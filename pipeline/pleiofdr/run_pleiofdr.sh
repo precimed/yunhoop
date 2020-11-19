@@ -82,8 +82,11 @@ export run_clump_conj_flag=$6
 run_on_cluster_flag=$7
 
 #manhattan plot color
-export manh_colorlist=$8
-
+if [ $# -lt 8 ]; then
+    export manh_colorlist="[1 0 0]"
+else
+    export manh_colorlist=$8
+fi
 #-------------------------------------------------------------------------#
 
 if [ "$run_on_cluster_flag" = "Y" ]; then
