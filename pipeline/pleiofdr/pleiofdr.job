@@ -26,7 +26,7 @@ IFS='_' read -r -a trait2_array <<< "$trait2file"
 trait2name=${trait2_array[1]}
 
 # configuration file
-configfile=$resultfolder/config_${trait1name}_${trait2name}.txt
+configfile=$pleiofdr/config.txt
 
 if [ -s $pipeline/config.txt ]; then
     cp $pipeline/config.txt $configfile
