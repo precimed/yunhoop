@@ -30,7 +30,7 @@ export BI_OUTDIR=/cluster/projects/nn9114k/yunhanc/results/mixer_1.3/bivariate
 export SUMSTAT=/cluster/projects/nn9114k/yunhanc/data/mixer
 export LDFILE=/cluster/projects/nn9114k/yunhanc/data/ref/LDSR/1000G_EUR_Phase3_plink/1000G.EUR.QC.@.run4.ld
 export BIMFILE=/cluster/projects/nn9114k/yunhanc/data/ref/LDSR/1000G_EUR_Phase3_plink/1000G.EUR.QC.@.bim
-export EXTRACT=/cluster/projects/nn9114k/yunhanc/data/ref/LDSR/1000G_EUR_Phase3_plink/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep${SLURM_ARRAY_TASK_ID}.snps
+export EXTRACT=/cluster/projects/nn9114k/yunhanc/data/ref/LDSR/1000G_EUR_Phase3_plink/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep
 
 #-------------------------------------------------------------------------#
 

@@ -26,18 +26,18 @@ set -o nounset # exit the scripts on unset variables
 module load Boost/1.71.0-GCC-8.3.0
 module load Python/3.7.4-GCCcore-8.3.0
 
-mkdir -p ${OUTDIR}/$TRAIT
+mkdir -p $OUTDIR/$TRAIT
 
 python3 $MIXER_ROOT/precimed/mixer.py fit1 \
       --trait1-file $SUMSTAT/$TRAIT.sumstats.gz \
-      --out ${OUTDIR}/$TRAIT/$TRAIT.fit.rep${SLURM_ARRAY_TASK_ID} \
+      --out $OUTDIR/$TRAIT/$TRAIT.fit.rep${SLURM_ARRAY_TASK_ID} \
       --bim-file $BIMFILE --ld-file $LDFILE \
       --lib $MIXER_ROOT/src/build/lib/libbgmg.so --threads 20 \
-      --extract $EXTRACT
+      --extract ${EXTRACT}${SLURM_ARRAY_TASK_ID}.snps
 
 python3 $MIXER_ROOT/precimed/mixer.py test1 \
       --trait1-file $SUMSTAT/$TRAIT.sumstats.gz \
       --load-params-file $OUTDIR/$TRAIT/$TRAIT.fit.rep${SLURM_ARRAY_TASK_ID}.json \
-      --out ${OUTDIR}/$TRAIT/$TRAIT.test.rep${SLURM_ARRAY_TASK_ID} \
+      --out $OUTDIR/$TRAIT/$TRAIT.test.rep${SLURM_ARRAY_TASK_ID} \
       --lib $MIXER_ROOT/src/build/lib/libbgmg.so --threads 20 \
       --bim-file $BIMFILE --ld-file $LDFILE

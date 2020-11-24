@@ -34,7 +34,7 @@ python3 $MIXER_ROOT/precimed/mixer.py fit2 \
       --trait1-params-file ${UNI_OUTDIR}/$TRAIT1/$TRAIT1.fit.rep${SLURM_ARRAY_TASK_ID}.json \
       --trait2-params-file ${UNI_OUTDIR}/$TRAIT2/$TRAIT2.fit.rep${SLURM_ARRAY_TASK_ID}.json \
       --out ${BI_OUTDIR}/${TRAIT1}_vs_${TRAIT2}/${TRAIT1}_vs_${TRAIT2}.fit.rep${SLURM_ARRAY_TASK_ID} \
-      --extract $EXTRACT \
+      --extract ${EXTRACT}${SLURM_ARRAY_TASK_ID}.snps \
       --lib $MIXER_ROOT/src/build/lib/libbgmg.so --threads 20 \
       --bim-file $BIMFILE --ld-file $LDFILE
 
