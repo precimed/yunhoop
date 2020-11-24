@@ -38,7 +38,7 @@ export pleiofdr=/cluster/projects/nn9114k/yunhanc/github/pleiofdr
 export python_convert=/cluster/projects/nn9114k/yunhanc/github/python_convert
 
 #folder containing data of traits
-export traitfolder=/cluster/projects/nn9114k/yunhanc/data/sumstat/mat_9545380
+export traitfolder=/cluster/projects/nn9114k/yunhanc/data/pleiofdr/mdd_cvd
 
 #reference file for running cFDR
 export ref_fdr=/cluster/projects/nn9114k/yunhanc/data/ref/ref9545380_1kgPhase3eur_LDr2p1.mat

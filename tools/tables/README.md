@@ -2,6 +2,7 @@
 
 * [mixer_uni_table.sh](#mixer_uni_tablesh)
 * [mixer_bi_table.sh](#mixer_bi_tablesh)
+* [fdr_fuma_input.sh](#fdr_fuma_inputsh)
 * [fdr_fuma_snp_table.sh](#fdr_fuma_snp_tablesh)
 * [fdr_fuma_loci_table.sh](#fdr_fuma_loci_tablesh)
 * [fuma_genes_table.sh](#fuma_genes_tablesh)
@@ -29,6 +30,24 @@ table.
 
 **Arguments**
 * `bi_csv` - csv file containing bivariate info
+
+### fdr_fuma_input.sh
+
+**Function**
+This script generates a snp list for FUMA analysis.
+
+**Usage** ``sh fdr_fuma_input.sh cfdr_clump_snp_file fdr r2 outfile``
+
+**Arguments**
+* `cfdr_clump_snp_file` - file that contains cfdr clumping snp info
+* `fdr` - FDR filter for selecting snps
+* `r2` - r2 filter for selecting snps
+* `outfile` - output file including selected snp list
+
+**Example**
+```
+sh fdr_fuma_input.sh PGC_BIP_2016_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snps.csv 0.1 0.6 BIP_vs_MOOD_input_snps.txt
+```
 
 ### fdr_fuma_snp_table.sh
 
