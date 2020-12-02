@@ -1,9 +1,9 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script runs pleioFDR analysis. To make it work, please customize
-# values to the parameters within the "parameters to cumtomize" section
-# according to your environment the first time you run it.
+# This script runs pleioFDR analysis (WITHOUT ANY WARRANTY). To make it work,
+# please customize values to the parameters within the "parameters to
+# cumtomize" section according to your environment the first time you run it.
 
 # Yunhan Chu (yunhanch@gmail.com)
 

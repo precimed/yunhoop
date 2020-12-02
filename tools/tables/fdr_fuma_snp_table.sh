@@ -35,9 +35,9 @@ outfolder=$7
 tag1=`echo $sumstat1 | cut -d'_' -f2`
 tag2=`echo $sumstat2 | cut -d'_' -f2`
 
-echo "rsID	chr	pos	non_effect_allele	effect_allele	r2	IndSigSNP	GenomicLocus	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	posMapFilt	eqtlMapFilt	ciMapFilt	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	Concordant_Effect" > $outfolder/${tag1}_vs_${tag2}_snps.txt
+echo "rsID	chr	pos	LEAD_SNP	FDR	non_effect_allele	effect_allele	r2	IndSigSNP	GenomicLocus	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	posMapFilt	eqtlMapFilt	ciMapFilt	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	Concordant_Effect" > $outfolder/${tag1}_vs_${tag2}_snps.txt
 
-cat $cfdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $11<fdr && $7>=r2 {print $6}' | sort -s | uniq > $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt
+cat $cfdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $11<fdr && $7>=r2 {print $6,$8,$11}' | sort -s | uniq > $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt
 
 cat $fuma_snp_file | cut -f2-6,9- | sort -s -k1,1 > $outfolder/fuma_snps_${tag1}_${tag2}.txt
 
@@ -55,6 +55,6 @@ fi
 
 join -1 1 -2 1 $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt > $outfolder/fuma_snps_${tag1}_${tag2}.tmp
 join -1 1 -2 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp ${sumstat1%%.*}.txt > $outfolder/fuma_snps_${tag1}_${tag2}.tmp2
-join -1 1 -2 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp2 ${sumstat2%%.*}.txt | awk '{if ($4==$19 && $5==$20) print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,-$22,-$23,$24,$25,$26,$27,$28; else print $0}' | awk '{if ($4==$24 && $5==$25) print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,-$27,-$28; else print $0}' | awk '{if ($23<0 && $28<0 || $23>0 && $28>0) print $0,"TRUE"; else print $0,"FALSE"}' | cut -d' ' -f1-18,21-23,26- | sed 's/ /	/g' | sort -n -k2,2 -k3,3 >> $outfolder/${tag1}_vs_${tag2}_snps.txt
+join -1 1 -2 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp2 ${sumstat2%%.*}.txt | awk '{if ($6==$21 && $7==$22) print $1,$4,$5,$2,$3,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,-$24,-$25,$26,$27,$28,$29,$30; else print $1,$4,$5,$2,$3,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30}' | awk '{if ($6==$26 && $7==$27) print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,-$29,-$30; else print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30}' | awk '{if ($25<0 && $30<0 || $25>0 && $30>0) print $0,"TRUE"; else print $0,"FALSE"}' | cut -d' ' -f1-20,23-25,28- | sed 's/ /	/g' | sort -n -k2,2 -k3,3 >> $outfolder/${tag1}_vs_${tag2}_snps.txt
 
-rm -f $outfolder/fdr_clump_snps_BIP_MOOD.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.tmp $outfolder/fuma_snps_${tag1}_${tag2}.tmp2
+rm -f $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.tmp $outfolder/fuma_snps_${tag1}_${tag2}.tmp2

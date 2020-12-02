@@ -25,4 +25,4 @@ r2=$3
 outfile=$4
 
 echo 'snp	pval' > $outfile
-tail -n +2 $cfdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $7>=r2 && $11<fdr {print $6,$11/10000000}' OFS="\t" | sort | uniq >> $outfile
+tail -n +2 $cfdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $7>=r2 && $11<fdr {print $6,$11/1000000000}' OFS="\t" | sort | uniq >> $outfile

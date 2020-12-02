@@ -21,9 +21,9 @@ fi
 fuma_genes_file=$1
 outfile=$2
 
-echo "ensg	symbol	chr	start	end	IndSigSNPs	strand	type	entrezID	HUGO	pLI	ncRVIS	posMapSNP	posMapSNPs	posMapMaxCADD	eqtlMapSNP	eqtlMapSNPs	eqtlMapminP	eqtlMapminQ	eqtlMapts	eqtlDirection	ciMap	ciMapts" > $outfile
+echo "ensg	symbol	chr	start	end	minGwasP	IndSigSNPs	GenomicLocus	strand	type	entrezID	HUGO	pLI	ncRVIS	posMapSNP	posMapSNPs	posMapMaxCADD	eqtlMapSNP	eqtlMapSNPs	eqtlMapminP	eqtlMapminQ	eqtlMapts	eqtlDirection	ciMap	ciMapts" > $outfile
 
-tail -n +2 $fuma_genes_file | cut -f1-20,22 | awk '{if ($12>0) print $0,"Yes"; else print $0,"No"}' | awk '{if ($14>0) print $0,"Yes"; else print $0,"No"}' | awk '{print $1,$2,$3,$4,$5,$21,$6,$7,$8,$9,$10,$11,$22,$12,$13,$23,$14,$15,$16,$17,$18,$19,$20}' OFS='\t' >> $outfile
+tail -n +2 $fuma_genes_file | awk '{if ($12>0) print $0,"Yes"; else print $0,"No"}' | awk '{if ($14>0) print $0,"Yes"; else print $0,"No"}' | awk '{print $1,$2,$3,$4,$5,$21,$22,$23,$6,$7,$8,$9,$10,$11,$24,$12,$13,$25,$14,$15,$16,$17,$18,$19,$20}' OFS='\t' >> $outfile
 
 head -n 1 $outfile > $outfile.tmp
 tail -n +2 $outfile | grep -E '(.*Yes){3}' >> $outfile.tmp
