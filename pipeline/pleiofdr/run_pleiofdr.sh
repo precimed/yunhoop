@@ -50,7 +50,7 @@ export ref_mat2csv=/cluster/projects/nn9114k/yunhanc/data/ref/9545380.ref
 export ref_clump=/cluster/projects/nn9114k/yunhanc/data/ref/plink_503eur
 
 #result folder
-export resultfolder=/cluster/projects/nn9114k/yunhanc/results/pleiofdr
+export resultfolder=/cluster/projects/nn9114k/yunhanc/results/pleiofdr/mdd_cvd
 
 #job account on cluster
 jobaccount=nn9114k
