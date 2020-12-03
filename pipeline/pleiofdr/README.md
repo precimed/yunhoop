@@ -30,10 +30,14 @@ clump-p1 0.05
 * `run_condfdr_clump_flag` - flag to run condFDR clumping [Y/N]
 * `run_conjfdr_clump_flag` - flag to run conjFDR clumping [Y/N]
 * `run_on_cluster_flag` - flag to run on cluster [Y/N]
-* `manh_colorlist` - manhattan plot color (default red)
+* `manh_colorlist` - manhattan plot color (default "[0 0 1]")
                    [red: 1 0 0; green 0 1 0; blue: 0 0 1; orange: 1 0.5 0;
                    cyan: 0 0.75 0.75; darkgreen: 0 0.5 0; olive: 0.5 0.5 0;
                    magenta: 0.75 0 0.75]
+* `manh_colorlist2` - manhattan plot color (default 1)
+                   [1 3 5 7 9 11 13 15 17 19; 2 4 6 8 10 12 14 16 18 20;
+                   orange sky_blue bluish_green yellow blue vermillion
+                   reddish_purple black]
 
 **Example**
 ```
