@@ -37,20 +37,26 @@ tag2=`echo $sumstat2 | cut -d'_' -f2`
 
 echo "rsID	chr	pos	LEAD_SNP	FDR	non_effect_allele	effect_allele	r2	IndSigSNP	GenomicLocus	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	posMapFilt	eqtlMapFilt	ciMapFilt	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	Concordant_Effect" > $outfolder/${tag1}_vs_${tag2}_snps.txt
 
-cat $cfdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $11<fdr && $7>=r2 {print $6,$8,$11}' | sort -s | uniq > $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt
+cat $cfdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $11<fdr && $7>=r2 {print $6,$8,$11}' | sort -s -k1,1 | uniq > $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt
 
 cat $fuma_snp_file | cut -f2-6,9- | sort -s -k1,1 > $outfolder/fuma_snps_${tag1}_${tag2}.txt
 
+n_z=`zcat $sumstat1 | head -n1 | sed 's/\t/\n/g' | grep -n Z | cut -d: -f1`
 if [ `zcat $sumstat1 | head -n1 | grep OR | wc -l` -gt 0 ]; then
-    zcat $sumstat1 | awk '{print $1,$5,$6,$4,$9,log($10)}' | sort -s -k1,1 > ${sumstat1%%.*}.txt
+    n_or=`zcat $sumstat1 | head -n1 | sed 's/\t/\n/g' | grep -n OR | cut -d: -f1`
+    zcat $sumstat1 | awk -v n_z=$n_z -v n_or=$n_or '{print $1,$5,$6,$4,$n_z,log($n_or)}' | sort -s -k1,1 > ${sumstat1%%.*}.txt
 else
-    zcat $sumstat1 | awk '{print $1,$5,$6,$4,$9,$10}' | sort -s -k1,1 > ${sumstat1%%.*}.txt
+    n_beta=`zcat $sumstat1 | head -n1 | sed 's/\t/\n/g' | grep -n BETA | cut -d: -f1`
+    zcat $sumstat1 | awk -v n_z=$n_z -v n_beta=$n_beta '{print $1,$5,$6,$4,$n_z,$n_beta}' | sort -s -k1,1 > ${sumstat1%%.*}.txt
 fi
 
+n_z=`zcat $sumstat2 | head -n1 | sed 's/\t/\n/g' | grep -n Z | cut -d: -f1`
 if [ `zcat $sumstat2 | head -n1 | grep OR | wc -l` -gt 0 ]; then
-    zcat $sumstat2 | awk '{print $1,$5,$6,$4,$9,log($10)}' | sort -s -k1,1 > ${sumstat2%%.*}.txt
+    n_or=`zcat $sumstat2 | head -n1 | sed 's/\t/\n/g' | grep -n OR | cut -d: -f1`
+    zcat $sumstat2 | awk -v n_z=$n_z -v n_or=$n_or '{print $1,$5,$6,$4,$n_z,log($n_or)}' | sort -s -k1,1 > ${sumstat2%%.*}.txt
 else
-    zcat $sumstat2 | awk '{print $1,$5,$6,$4,$9,$10}' | sort -s -k1,1 > ${sumstat2%%.*}.txt
+    n_beta=`zcat $sumstat2 | head -n1 | sed 's/\t/\n/g' | grep -n BETA | cut -d: -f1`
+    zcat $sumstat2 | awk -v n_z=$n_z -v n_beta=$n_beta '{print $1,$5,$6,$4,$n_z,$n_beta}' | sort -s -k1,1 > ${sumstat2%%.*}.txt
 fi
 
 join -1 1 -2 1 $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt > $outfolder/fuma_snps_${tag1}_${tag2}.tmp

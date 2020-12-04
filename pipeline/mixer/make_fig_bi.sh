@@ -69,6 +69,7 @@ python $mixer/precimed/mixer_figures.py two \
     --trait1 $trait1name \
     --trait2 $trait2name \
     --statistic mean std \
+    --ext png svg \
     --out $bivariate_output/${TRAIT1}_vs_${TRAIT2}/combined/${TRAIT1}_vs_${TRAIT2}.bi
 
 python $mixer/precimed/mixer_figures.py two \

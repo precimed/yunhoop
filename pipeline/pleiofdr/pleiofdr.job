@@ -98,13 +98,13 @@ if [ "$run_clump_cond_flag" = "Y" ]; then
 
     # make manhattan plot
     python $python_convert/manhattan.py $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/result.mat.csv \
-        --lead $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/conj.result.clump.lead.csv \
-        --indep $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/conj.result.clump.indep.csv \
+        --lead $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/cond.result.clump.lead.csv \
+        --indep $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/cond.result.clump.indep.csv \
         --legend-labels "$trait1name & $trait2name" \
         --color-list $manh_colorlist2 \
-        --legend-location $legend_location \
+        --legend-location "$legend_location" \
         --p FDR --y-label condFDR --p-thresh 0.01 \
-        --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/condfdr_001_manhattan
+        --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/condfdr_001_manhattan_${trait1name}_${trait2name}
 
     # convert result.mat to result.mat.csv
     python $python_convert/fdrmat2csv.py $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/result.mat $ref_mat2csv
@@ -121,13 +121,13 @@ if [ "$run_clump_cond_flag" = "Y" ]; then
 
     # make manhattan plot
     python $python_convert/manhattan.py $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/result.mat.csv \
-        --lead $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/conj.result.clump.lead.csv \
-        --indep $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/conj.result.clump.indep.csv \
+        --lead $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/cond.result.clump.lead.csv \
+        --indep $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/cond.result.clump.indep.csv \
         --legend-labels "$trait2name & $trait1name" \
         --color-list $manh_colorlist2 \
-        --legend-location $legend_location \
+        --legend-location "$legend_location" \
         --p FDR --y-label condFDR --p-thresh 0.01 \
-        --out $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/condfdr_001_manhattan
+        --out $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/condfdr_001_manhattan_${trait2name}_${trait1name}
 fi
 
 if [ "$run_clump_conj_flag" = "Y" ]; then
@@ -150,7 +150,7 @@ if [ "$run_clump_conj_flag" = "Y" ]; then
         --indep $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_conjfdr/conj.result.clump.indep.csv \
         --legend-labels "$trait1name & $trait2name" \
         --color-list $manh_colorlist2 \
-        --legend-location $legend_location \
+        --legend-location "$legend_location" \
         --p FDR --y-label conjFDR --p-thresh 0.05 \
-        --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_conjfdr/conjfdr_005_manhattan
+        --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_conjfdr/conjfdr_005_manhattan_${trait1name}_${trait2name}
 fi
