@@ -96,16 +96,6 @@ if [ "$run_clump_cond_flag" = "Y" ]; then
         --clump-p1 0.01 \
         --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/cond.result.clump
 
-    # make manhattan plot
-    python $python_convert/manhattan.py $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/result.mat.csv \
-        --lead $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/cond.result.clump.lead.csv \
-        --indep $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/cond.result.clump.indep.csv \
-        --legend-labels "$trait1name & $trait2name" \
-        --color-list $manh_colorlist2 \
-        --legend-location "$legend_location" \
-        --p FDR --y-label condFDR --p-thresh 0.01 \
-        --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/condfdr_001_manhattan_${trait1name}_${trait2name}
-
     # convert result.mat to result.mat.csv
     python $python_convert/fdrmat2csv.py $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/result.mat $ref_mat2csv
 
@@ -118,6 +108,18 @@ if [ "$run_clump_cond_flag" = "Y" ]; then
         --exclude-ranges 6:25119106-33854733 8:7200000-12500000 \
         --clump-p1 0.01 \
         --out $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/cond.result.clump
+fi
+
+if [ "$plot_manh_cond_flag" = "Y" ]; then
+    # make manhattan plot
+    python $python_convert/manhattan.py $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/result.mat.csv \
+        --lead $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/cond.result.clump.lead.csv \
+        --indep $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/cond.result.clump.indep.csv \
+        --legend-labels "$trait1name & $trait2name" \
+        --color-list $manh_colorlist2 \
+        --legend-location "$legend_location" \
+        --p FDR --y-label condFDR --p-thresh 0.01 \
+        --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_condfdr/condfdr_001_manhattan_${trait1name}_${trait2name}
 
     # make manhattan plot
     python $python_convert/manhattan.py $resultfolder/${trait2file%%.*}_vs_${trait1file%%.*}_condfdr/result.mat.csv \
@@ -143,7 +145,9 @@ if [ "$run_clump_conj_flag" = "Y" ]; then
         --exclude-ranges 6:25119106-33854733 8:7200000-12500000 \
         --clump-p1 0.05 \
         --out $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_conjfdr/conj.result.clump
+fi
 
+if [ "$plot_manh_conj_flag" = "Y" ]; then
     # make manhattan plot
     python $python_convert/manhattan.py $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_conjfdr/result.mat.csv \
         --lead $resultfolder/${trait1file%%.*}_vs_${trait2file%%.*}_conjfdr/conj.result.clump.lead.csv \

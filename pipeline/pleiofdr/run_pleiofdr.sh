@@ -19,6 +19,8 @@ if [ $# -lt 7 ]; then
   echo "           run_conjfdr_flag - flag to run conjFDR [Y/N]"
   echo "           run_clump_cond_flag - flag to run condFDR clumping [Y/N]"
   echo "           run_clump_conj_flag - flag to run conjFDR clumping [Y/N]"
+  echo "           plot_manh_cond_flag - flag to plot condFDR manhattan plot [Y/N]"
+  echo "           plot_manh_conj_flag - flag to plot conjFDR manhattan plot [Y/N]"
   echo "           run_on_cluster_flag - flag to run on cluster [Y/N]"
   echo '           manh_colorlist - manhattan plot color (default "[1 0 0]")
                    [red: 1 0 0; green 0 1 0; blue: 0 0 1; orange: 1 0.5 0;
@@ -28,8 +30,8 @@ if [ $# -lt 7 ]; then
                    [1 3 5 7 9 11 13 15 17 19; 2 4 6 8 10 12 14 16 18 20;
                    orange sky_blue bluish_green yellow blue vermillion
                    reddish_purple black]"
-  echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 N Y N Y N'
-  echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 Y Y Y Y Y "[0 0 1]" 1'
+  echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 N Y N Y N Y N'
+  echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 Y Y Y Y Y Y Y "[0 0 1]" 1'
   exit 0
 fi
 
@@ -79,24 +81,30 @@ export run_clump_cond_flag=$5
 #flag to run conjFDR clumping 
 export run_clump_conj_flag=$6
 
+#flag to plot condFDR manhattan plot (python)
+export plot_manh_cond_flag=$7
+
+#flag to plot conjFDR manhattan plot (python)
+export plot_manh_conj_flag=$8
+
 #flag to run on cluster
-run_on_cluster_flag=$7
+run_on_cluster_flag=$9
 
 #manhattan plot color (matlab)
-if [ $# -lt 8 ]; then
+if [ $# -lt 10 ]; then
     export manh_colorlist="[1 0 0]"
 else
-    export manh_colorlist=$8
+    export manh_colorlist=${10}
 fi
 
 #manhattan plot color (python)
-if [ $# -lt 8 ] || [ $# -lt 9 ]; then
+if [ $# -lt 10 ] || [ $# -lt 11 ]; then
     export manh_colorlist2=1
 else
-    export manh_colorlist2=$9
+    export manh_colorlist2=${11}
 fi
 
-export legend_location="upper right"
+export legend_location="upper left"
 
 #-------------------------------------------------------------------------#
 
