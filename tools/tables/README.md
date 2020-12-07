@@ -54,6 +54,10 @@ sh fdr_fuma_input.sh PGC_BIP_2016_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snp
 **Function**
 This script generates data for supplementary snp table (FUMA+SUMSTAT)
 based on selected snp subset (fdr,r2) from cFDR/FUMA analysis.
+NOTE: there might be difference between the loci numbers from FDR analysis
+and the ones from FUMA analysis (GenomicLocus). This is because the former
+is based on clumping of FDR, while the latter is based on clumping of
+p-value, good to distiguish between them.
 
 **Usage** ``sh fdr_fuma_snp_table.sh cfdr_clump_snp_file fdr r2 fuma_snp_file sumstat1 sumstat2 outfolder``
 
