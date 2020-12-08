@@ -43,21 +43,31 @@ cat $cfdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $11<fdr && $7>=r
 cat $fuma_snp_file | cut -f2-6,9- | sort -s -k1,1 > $outfolder/fuma_snps_${tag1}_${tag2}.txt
 
 n_z=`zcat $sumstat1 | head -n1 | sed 's/\t/\n/g' | grep -n Z | cut -d: -f1`
+if [ "$n_z" = "" ]; then
+    n_z="NA"
+fi
 if [ `zcat $sumstat1 | head -n1 | grep OR | wc -l` -gt 0 ]; then
     n_or=`zcat $sumstat1 | head -n1 | sed 's/\t/\n/g' | grep -n OR | cut -d: -f1`
     zcat $sumstat1 | awk -v n_z=$n_z -v n_or=$n_or '{print $1,$5,$6,$4,$n_z,log($n_or)}' | sort -s -k1,1 > ${sumstat1%%.*}.txt
-else
+elif [ `zcat $sumstat1 | head -n1 | grep BETA | wc -l` -gt 0 ]; then
     n_beta=`zcat $sumstat1 | head -n1 | sed 's/\t/\n/g' | grep -n BETA | cut -d: -f1`
     zcat $sumstat1 | awk -v n_z=$n_z -v n_beta=$n_beta '{print $1,$5,$6,$4,$n_z,$n_beta}' | sort -s -k1,1 > ${sumstat1%%.*}.txt
+else
+    zcat $sumstat1 | awk -v n_z=$n_z '{print $1,$5,$6,$4,n_z,"NA"}' | sort -s -k1,1 > ${sumstat1%%.*}.txt
 fi
 
 n_z=`zcat $sumstat2 | head -n1 | sed 's/\t/\n/g' | grep -n Z | cut -d: -f1`
+if [ "$n_z" = "" ]; then
+    n_z="NA"
+fi
 if [ `zcat $sumstat2 | head -n1 | grep OR | wc -l` -gt 0 ]; then
     n_or=`zcat $sumstat2 | head -n1 | sed 's/\t/\n/g' | grep -n OR | cut -d: -f1`
     zcat $sumstat2 | awk -v n_z=$n_z -v n_or=$n_or '{print $1,$5,$6,$4,$n_z,log($n_or)}' | sort -s -k1,1 > ${sumstat2%%.*}.txt
-else
+elif [ `zcat $sumstat2 | head -n1 | grep BETA | wc -l` -gt 0 ]; then
     n_beta=`zcat $sumstat2 | head -n1 | sed 's/\t/\n/g' | grep -n BETA | cut -d: -f1`
     zcat $sumstat2 | awk -v n_z=$n_z -v n_beta=$n_beta '{print $1,$5,$6,$4,$n_z,$n_beta}' | sort -s -k1,1 > ${sumstat2%%.*}.txt
+else
+    zcat $sumstat2 | awk -v n_z=$n_z '{print $1,$5,$6,$4,n_z,"NA"}' | sort -s -k1,1 > ${sumstat2%%.*}.txt
 fi
 
 join -1 1 -2 1 $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt > $outfolder/fuma_snps_${tag1}_${tag2}.tmp
