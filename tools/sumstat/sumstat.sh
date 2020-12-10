@@ -20,7 +20,6 @@ fi
 #-------------------------------------------------------------------------#
 
 module purge
-module load PLINK/1.9b_6.13-x86_64
 module load Python/3.7.4-GCCcore-8.3.0
 set -o errexit
 
