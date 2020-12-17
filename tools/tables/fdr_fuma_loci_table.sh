@@ -4,7 +4,7 @@
 # This script generates data for supplementary loci table (cFDR+FUMA+SUMSTAT)
 # from cFDR/FUMA analysis, but WITHOUT ANY WARRANTY.
 
-# Yunhan Chu (yunhanch@gmail.com)
+# Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 
 # (c) 2020-2022 NORMENT, UiO
 

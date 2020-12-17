@@ -5,7 +5,7 @@
 # based on selected snp subset (fdr,r2) from cFDR/FUMA analysis, but WITHOUT
 # ANY WARRANTY.
 
-# Yunhan Chu (yunhanch@gmail.com)
+# Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 
 # (c) 2020-2022 NORMENT, UiO
 
@@ -33,8 +33,8 @@ sumstat2=$6
 outfile=$7
 outfolder=`dirname $outfile`
 
-tag1=`echo $sumstat1 | cut -d'_' -f2`
-tag2=`echo $sumstat2 | cut -d'_' -f2`
+tag1=`basename $sumstat1 | cut -d'_' -f2`
+tag2=`basename $sumstat2 | cut -d'_' -f2`
 
 echo "rsID	chr	pos	LEAD_SNP	FDR	non_effect_allele	effect_allele	r2	IndSigSNP	GenomicLocus	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	posMapFilt	eqtlMapFilt	ciMapFilt	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	Concordant_Effect" > $outfile
 
@@ -49,17 +49,17 @@ for sumstat in $sumstat1 $sumstat2; do
     n_z=`zcat $sumstat | head -n1 | sed 's/\t/\n/g' | grep -n Z | cut -d: -f1`
     if [ `zcat $sumstat | head -n1 | grep OR | wc -l` -gt 0 ]; then
         n_or=`zcat $sumstat | head -n1 | sed 's/\t/\n/g' | grep -n OR | cut -d: -f1`
-        zcat $sumstat | awk -v n_z=$n_z -v n_or=$n_or '{print $1,$5,$6,$4,$n_z,log($n_or)}' | sort -s -k1,1 > ${sm%%.*}.txt
+        zcat $sumstat | awk -v n_z=$n_z -v n_or=$n_or '{print $1,$5,$6,$4,$n_z,log($n_or)}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
     elif [ `zcat $sumstat | head -n1 | grep BETA | wc -l` -gt 0 ]; then
         n_beta=`zcat $sumstat | head -n1 | sed 's/\t/\n/g' | grep -n BETA | cut -d: -f1`
-        zcat $sumstat | awk -v n_z=$n_z -v n_beta=$n_beta '{print $1,$5,$6,$4,$n_z,$n_beta}' | sort -s -k1,1 > ${sm%%.*}.txt
+        zcat $sumstat | awk -v n_z=$n_z -v n_beta=$n_beta '{print $1,$5,$6,$4,$n_z,$n_beta}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
     else
-        zcat $sumstat | awk -v n_z=$n_z '{print $1,$5,$6,$4,$n_z,"NA"}' | sort -s -k1,1 > ${sm%%.*}.txt
+        zcat $sumstat | awk -v n_z=$n_z '{print $1,$5,$6,$4,$n_z,"NA"}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
     fi
 done
 
 join -1 1 -2 1 $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt > $outfolder/fuma_snps_${tag1}_${tag2}.tmp
-join -1 1 -2 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp ${sm1%%.*}.txt > $outfolder/fuma_snps_${tag1}_${tag2}.tmp2
-join -1 1 -2 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp2 ${sm2%%.*}.txt | awk '{if ($6==$21 && $7==$22 && $25!="NA") print $1,$4,$5,$2,$3,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,-$24,-$25,$26,$27,$28,$29,$30; else if ($6==$21 && $7==$22 && $25=="NA") print $1,$4,$5,$2,$3,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,-$24,"NA",$26,$27,$28,$29,$30; else print $1,$4,$5,$2,$3,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30}' | awk '{if ($6==$26 && $7==$27 && $30!="NA") print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,-$29,-$30; else if ($6==$26 && $7==$27 && $30=="NA") print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,-$29,"NA"; else print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30}' | awk '{if ($25<0 && $30<0 || $25>0 && $30>0) print $0,"TRUE"; else print $0,"FALSE"}' | cut -d' ' -f1-20,23-25,28- | sed 's/ / /g' | sort -n -k2,2 -k3,3 >> $outfile
+join -1 1 -2 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp $outfolder/${sm1%%.*}.txt > $outfolder/fuma_snps_${tag1}_${tag2}.tmp2
+join -1 1 -2 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp2 $outfolder/${sm2%%.*}.txt | awk '{if ($6==$21 && $7==$22 && $25!="NA") print $1,$4,$5,$2,$3,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,-$24,-$25,$26,$27,$28,$29,$30; else if ($6==$21 && $7==$22 && $25=="NA") print $1,$4,$5,$2,$3,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,-$24,"NA",$26,$27,$28,$29,$30; else print $1,$4,$5,$2,$3,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30}' | awk '{if ($6==$26 && $7==$27 && $30!="NA") print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,-$29,-$30; else if ($6==$26 && $7==$27 && $30=="NA") print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,-$29,"NA"; else print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30}' | awk '{if ($25<0 && $30<0 || $25>0 && $30>0) print $0,"TRUE"; else print $0,"FALSE"}' | cut -d' ' -f1-20,23-25,28- | sed 's/ / /g' | sort -n -k2,2 -k3,3 >> $outfile
 
-rm $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt ${sm1%%.*}.txt ${sm2%%.*}.txt $outfolder/fuma_snps_${tag1}_${tag2}.tmp $outfolder/fuma_snps_${tag1}_${tag2}.tmp2
+rm $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt $outfolder/${sm1%%.*}.txt $outfolder/${sm2%%.*}.txt $outfolder/fuma_snps_${tag1}_${tag2}.tmp $outfolder/fuma_snps_${tag1}_${tag2}.tmp2
