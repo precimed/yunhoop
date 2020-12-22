@@ -13,8 +13,8 @@
 
 if [ $# -lt 3 ]; then
   echo "Usage: sh check_loci_in_gwasc.sh cfdr_clump_snps_file fuma_gwascatalog_file keyword"
-  echo "Arguments: conx.result.clump.snps.csv - file that contains snp info from clumping"
-  echo "           gwascatalog.txt - file that contains gwascatalog info from FUMA"
+  echo "Arguments: cfdr_clump_snps_file - file that contains snp info from clumping"
+  echo "           fuma_gwascatalog_file - file that contains gwascatalog info from FUMA"
   echo "           keyword - keyword such as name or part name of investigated trait"
   echo "Example: sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt depress"
   exit 0
