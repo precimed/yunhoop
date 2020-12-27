@@ -27,7 +27,7 @@ fdrthresh=0.05
 
 # Random pruning options (on/off, number of iterations)
 randprune=true
-randprune_n=100
+randprune_n=500
 
 # Exclusion regions in format [CHR BP_from BP_to],
 # where CHR is chromosome and BP_from and BP_to are genomic coordinates (hg19 build).
