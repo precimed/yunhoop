@@ -34,15 +34,15 @@ This script checks whether the loci reported by cfdr analysis have been
 registered in gwascatalog with respect to specific phenotype, if so the
 locus is considered unnovel.
 
-**Usage** ``sh check_loci_in_gwasc.sh cfdr_clump_snps_file fuma_gwascatalog_file keyword``
+**Usage** ``sh check_loci_in_gwasc.sh fdr_clump_snp_file fuma_gwascatalog_file keyword``
 
 **Arguments**
-* `cfdr_clump_snps_file` - file that contains snp info from cfdr clumping
-* `fuma_gwascatalog_file` - file that contains gwascatalog info from FUMA
-* `keyword` - keyword such as name of part of the name of investigated trait
+* `fdr_clump_snp_file` - fdr clumping snp file
+* `fuma_gwascatalog_file` - fuma gwascatalog file
+* `keyword` - keyword such as name or partial name of specified trait, can be multiple words within ''
 
 **Example**
 ```
-sh check_loci_in_gwasc.sh PGC_BIP_2016_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snps.csv snp2gene/BIP_vs_MOOD_conj_005/gwascatalog.txt bipolar
-sh check_loci_in_gwasc.sh PGC_MDD_2018_with23andMe_noUKBB_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snps.csv snp2gene/MDD_vs_MOOD_conj_005/gwascatalog.txt depress
+sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'depress'
+sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'major depressive disorder'
 ```

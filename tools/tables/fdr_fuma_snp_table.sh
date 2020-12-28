@@ -11,20 +11,20 @@
 
 #-------------------------------------------------------------------------#
 if [ $# -lt 7 ]; then
-  echo "Usage:     sh fdr_fuma_snp_table.sh cfdr_clump_snp_file fdr r2 fuma_snp_file sumstat1 sumstat2 outfile"
-  echo "Arguments: cfdr_clump_snp_file - file that contains cfdr clumping snp info"
+  echo "Usage:     sh fdr_fuma_snp_table.sh fdr_clump_snp_file fdr r2 fuma_snp_file sumstat1 sumstat2 outfile"
+  echo "Arguments: fdr_clump_snp_file - fdr clumping snp file"
   echo "           fdr - FDR filter for selecting snps"
   echo "           r2 - r2 filter for selecting snps"
-  echo "           fuma_snp_file - FUMA annotated snp file"
+  echo "           fuma_snp_file - fuma annotated snp file"
   echo "           sumstat1 - primary summary statistic file"
   echo "           sumstat2 - secondary summary statistic file"
   echo "           outfile - output file"
-  echo "Example:   sh fdr_fuma_snp_table.sh PGC_BIP_2016_vs_UKB_MOOD_2019_conjfdr/conj.result.clump.snps.csv 0.1 0.6 snp2gene/BIP_vs_MOOD_conj_005/snps.txt sumstat/std/PGC_BIP_2016.sumstats.gz sumstat/std/UKB_MOOD_2019.sumstats.gz snp2gene/BIP_vs_MOOD_snps.txt"
+  echo "Example:   sh fdr_fuma_snp_table.sh conj.result.clump.snps.csv 0.1 0.6 snps.txt sumstat/std/trait1.sumstats.gz sumstat/std/trait2.sumstats.gz trait1_vs_trait2_snps.txt"
   exit 0
 fi
 #-------------------------------------------------------------------------#
 
-cfdr_clump_snp_file=$1
+fdr_clump_snp_file=$1
 fdr=$2
 r2=$3
 fuma_snp_file=$4
@@ -38,7 +38,7 @@ tag2=`basename $sumstat2 | cut -d'_' -f2`
 
 echo "rsID	chr	pos	LEAD_SNP	FDR	non_effect_allele	effect_allele	r2	IndSigSNP	GenomicLocus	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	posMapFilt	eqtlMapFilt	ciMapFilt	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	Concordant_Effect" > $outfile
 
-cat $cfdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $11<fdr && $7>=r2 {print $6,$8,$11}' | sort -s -k1,1 | uniq > $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt
+cat $fdr_clump_snp_file | awk -v fdr=$fdr -v r2=$r2 'NF==11 && $11<fdr && $7>=r2 {print $6,$8,$11}' | sort -s -k1,1 | uniq > $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt
 
 cat $fuma_snp_file | cut -f2-6,9- | sort -s -k1,1 > $outfolder/fuma_snps_${tag1}_${tag2}.txt
 
