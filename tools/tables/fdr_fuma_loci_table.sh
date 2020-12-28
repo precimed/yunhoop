@@ -85,7 +85,7 @@ if [ $# -eq 9 ]; then
             sh $(dirname $0)/../novelty/check_loci_in_gwasc.sh $fdr_snp_table $fuma_gwasc "$keyword1" | cut -f1 | uniq > ${outfile%.*}_${tag1}_novel_loci.tmp3
             rm -f ${outfile%.*}_${tag1}_novel_loci.tmp4
             for i in `cat ${outfile%.*}.tmp3`; do
-                if [ `grep "^$i$" ${outfile%.*}_${tag1}_novel_loci.tmp3 | wc -l` -gt 0 ]; then
+                if [ `grep "^$i$" ${outfile%.*}_${tag1}_novel_loci.tmp3 | wc -l` -eq 0 ]; then
                     echo $i"	Yes" >> ${outfile%.*}_${tag1}_novel_loci.tmp4
                 else
                     echo $i"	No" >> ${outfile%.*}_${tag1}_novel_loci.tmp4
@@ -99,7 +99,7 @@ if [ $# -eq 9 ]; then
             sh $(dirname $0)/../novelty/check_loci_in_gwasc.sh $fdr_snp_table $fuma_gwasc "$keyword2" | cut -f1 | uniq > ${outfile%.*}_${tag2}_novel_loci.tmp3
             rm -f ${outfile%.*}_${tag2}_novel_loci.tmp4
             for i in `cat ${outfile%.*}.tmp3`; do
-                if [ `grep "^$i$" ${outfile%.*}_${tag2}_novel_loci.tmp3 | wc -l` -gt 0 ]; then
+                if [ `grep "^$i$" ${outfile%.*}_${tag2}_novel_loci.tmp3 | wc -l` -eq 0 ]; then
                     echo $i"	Yes" >> ${outfile%.*}_${tag2}_novel_loci.tmp4
                 else
                     echo $i"	No" >> ${outfile%.*}_${tag2}_novel_loci.tmp4
@@ -108,27 +108,25 @@ if [ $# -eq 9 ]; then
         fi
     fi
 fi
-echo "locusnum	novel_in_novdb	novel_in_gwas" > ${outfile%.*}_${tag1}_novelty.txt
-if [ -f ${outfile%.*}_${tag1}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag1}_novel_loci.tmp4 ]; then
-    paste ${outfile%.*}_${tag1}_novel_loci.tmp2 ${outfile%.*}_${tag1}_novel_loci.tmp4 | awk '{print $3,$2,$4}' OFS='\t' >> ${outfile%.*}_${tag1}_novelty.txt
-elif [ ! -f ${outfile%.*}_${tag1}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag1}_novel_loci.tmp4 ]; then
-    awk '{print $1,"No",$2}' OFS='\t' ${outfile%.*}_${tag1}_novel_loci.tmp4 >> ${outfile%.*}_${tag1}_novelty.txt
-elif [ -f ${outfile%.*}_${tag1}_novel_loci.tmp2 ] && [ ! -f ${outfile%.*}_${tag1}_novel_loci.tmp4 ]; then
-    awk '{print $0,"No"}' OFS='\t' ${outfile%.*}_${tag1}_novel_loci.tmp2 >> ${outfile%.*}_${tag1}_novelty.txt
-else
-    echo "0	No	No" >> ${outfile%.*}_${tag1}_novelty.txt
-fi
-
 if [ $# -ge 5 ]; then
+    echo "locusnum	novel_in_novdb	novel_in_gwas" > ${outfile%.*}_${tag1}_novelty.txt
+    if [ -f ${outfile%.*}_${tag1}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag1}_novel_loci.tmp4 ]; then
+        paste ${outfile%.*}_${tag1}_novel_loci.tmp2 ${outfile%.*}_${tag1}_novel_loci.tmp4 | awk '{print $3,$2,$4}' OFS='\t' >> ${outfile%.*}_${tag1}_novelty.txt
+    elif [ ! -f ${outfile%.*}_${tag1}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag1}_novel_loci.tmp4 ]; then
+        awk '{print $1,"Yes",$2}' OFS='\t' ${outfile%.*}_${tag1}_novel_loci.tmp4 >> ${outfile%.*}_${tag1}_novelty.txt
+    elif [ -f ${outfile%.*}_${tag1}_novel_loci.tmp2 ] && [ ! -f ${outfile%.*}_${tag1}_novel_loci.tmp4 ]; then
+        awk '{print $0,"Yes"}' OFS='\t' ${outfile%.*}_${tag1}_novel_loci.tmp2 >> ${outfile%.*}_${tag1}_novelty.txt
+    fi
+
     echo "locusnum	novel_in_novdb	novel_in_gwas" > ${outfile%.*}_${tag2}_novelty.txt
     if [ -f ${outfile%.*}_${tag2}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag2}_novel_loci.tmp4 ]; then
         paste ${outfile%.*}_${tag2}_novel_loci.tmp2 ${outfile%.*}_${tag2}_novel_loci.tmp4 | awk '{print $3,$2,$4}' OFS='\t' >> ${outfile%.*}_${tag2}_novelty.txt
     elif [ ! -f ${outfile%.*}_${tag2}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag2}_novel_loci.tmp4 ]; then
-        awk '{print $1,"No",$2}' OFS='\t' ${outfile%.*}_${tag2}_novel_loci.tmp4 >> ${outfile%.*}_${tag2}_novelty.txt
+        awk '{print $1,"Yes",$2}' OFS='\t' ${outfile%.*}_${tag2}_novel_loci.tmp4 >> ${outfile%.*}_${tag2}_novelty.txt
     elif [ -f ${outfile%.*}_${tag2}_novel_loci.tmp2 ] && [ ! -f ${outfile%.*}_${tag2}_novel_loci.tmp4 ]; then
-        awk '{print $0,"No"}' OFS='\t' ${outfile%.*}_${tag2}_novel_loci.tmp2 >> ${outfile%.*}_${tag2}_novelty.txt
+        awk '{print $0,"Yes"}' OFS='\t' ${outfile%.*}_${tag2}_novel_loci.tmp2 >> ${outfile%.*}_${tag2}_novelty.txt
     fi
-    paste $outfile ${outfile%.*}_${tag1}_novelty.txt ${outfile%.*}_${tag2}_novelty.txt | cut -f1-23,25-26,28-29 | awk '{if ($24=="Yes" || $25=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | awk '{if ($26=="Yes" || $27=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | cut -f1-23,28-29 | sed "1s/No	No/Novel_in_${tag1}	Novel_in_${tag2}/" > ${outfile%.*}.tmp4
+    paste $outfile ${outfile%.*}_${tag1}_novelty.txt ${outfile%.*}_${tag2}_novelty.txt | cut -f1-23,25-26,28-29 | awk '{if ($24=="Yes" && $25=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | awk '{if ($26=="Yes" && $27=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | cut -f1-23,28-29 | sed "1s/No	No/Novel_in_${tag1}	Novel_in_${tag2}/" > ${outfile%.*}.tmp4
     mv ${outfile%.*}.tmp4 $outfile
 fi
 
