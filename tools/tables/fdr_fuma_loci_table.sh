@@ -36,7 +36,7 @@ echo "locusnum	CHR	LEAD_SNP	LEAD_BP	MinBP	MaxBP	cFDR	non_effect_allele	effect_al
 sort -s -k3,3 $fdr_clump_loci_file > $fdr_clump_loci_file.sorted
 sort -s -k1,1 $fdr_fuma_snp_table > $fdr_fuma_snp_table.sorted
 
-join -1 3 -2 1 -a 1 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | grep -v FDR | awk '{print $2,$3,$1,$4,$5,$6,$7,$12,$13,$17,$18,$19,$20,$21,$22,$23,$27,$28,$29,$30,$31,$32,$33}' OFS='\t' | sed 's/		/	-	/g' | sed 's/		/	-	/g' | sed 's/	$/	-/g' | sort -n -k2,2 -k4,4 >> $outfile
+join -1 3 -2 1 -a 1 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | grep -v FDR | awk '{print $2,$3,$1,$4,$5,$6,$7,$12,$13,$17,$18,$19,$20,$21,$22,$23,$27,$28,$29,$30,$31,$32,$33}' OFS='\t' | sort -n -k2,2 -k4,4 >> $outfile
 
 if [ $# -ge 5 ]; then
     trait1locifile=$4
@@ -126,7 +126,7 @@ if [ $# -ge 5 ]; then
     elif [ -f ${outfile%.*}_${tag2}_novel_loci.tmp2 ] && [ ! -f ${outfile%.*}_${tag2}_novel_loci.tmp4 ]; then
         awk '{print $0,"Yes"}' OFS='\t' ${outfile%.*}_${tag2}_novel_loci.tmp2 >> ${outfile%.*}_${tag2}_novelty.txt
     fi
-    paste $outfile ${outfile%.*}_${tag1}_novelty.txt ${outfile%.*}_${tag2}_novelty.txt | cut -f1-23,25-26,28-29 | awk '{if ($24=="Yes" && $25=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | awk '{if ($26=="Yes" && $27=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | cut -f1-23,28-29 | sed "1s/No	No/Novel_in_${tag1}	Novel_in_${tag2}/" > ${outfile%.*}.tmp4
+    paste $outfile ${outfile%.*}_${tag1}_novelty.txt ${outfile%.*}_${tag2}_novelty.txt | cut -f1-23,25-26,28-29 | awk '{if($24=="Yes" && $25=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | awk '{if($26=="Yes" && $27=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | cut -f1-23,28-29 | sed "1s/No	No/Novel_in_${tag1}	Novel_in_${tag2}/" > ${outfile%.*}.tmp4
     mv ${outfile%.*}.tmp4 $outfile
 fi
 
