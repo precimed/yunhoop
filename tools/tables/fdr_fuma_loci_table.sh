@@ -130,5 +130,11 @@ if [ $# -ge 5 ]; then
     mv ${outfile%.*}.tmp4 $outfile
 fi
 
-rm -f $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted ${trait1locifile%.*}.tmp ${trait2locifile%.*}.tmp ${outfile%.*}.tmp* ${outfile%.*}_${tag1}_novel_loci.tmp* ${outfile%.*}_${tag2}_novel_loci.tmp*
+if [ -f ${trait1locifile%.*}.tmp ]; then
+    rm ${trait1locifile%.*}.tmp
+fi
+if [ -f ${trait2locifile%.*}.tmp ]; then
+    rm ${trait2locifile%.*}.tmp
+fi
+rm -f $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted ${outfile%.*}.tmp* ${outfile%.*}_${tag1}_novel_loci.tmp* ${outfile%.*}_${tag2}_novel_loci.tmp*
 rm -f ${outfile%.*}_${tag1}_novel_loci.txt ${outfile%.*}_${tag1}_overlap_loci.txt ${outfile%.*}_${tag2}_novel_loci.txt ${outfile%.*}_${tag2}_overlap_loci.txt
