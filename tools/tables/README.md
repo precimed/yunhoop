@@ -15,10 +15,11 @@
 This script extracts data from mixer analysis for supplementary univariate
 table.
 
-**Usage** ``sh mixer_uni_table.sh uni_csv``
+**Usage** ``sh mixer_uni_table.sh uni_csv outfile``
 
 **Arguments**
 * `uni_csv` - csv file containing univariate info
+* `outfile` - output file
 
 ### mixer_bi_table.sh
 
@@ -26,10 +27,11 @@ table.
 This script extracts data from mixer analysis for supplementary bivariate
 table.
 
-**Usage** ``sh mixer_bi_table.sh bi_csv``
+**Usage** ``sh mixer_bi_table.sh bi_csv outfile``
 
 **Arguments**
 * `bi_csv` - csv file containing bivariate info
+* `outfile` - output file
 
 ### fdr_fuma_input.sh
 

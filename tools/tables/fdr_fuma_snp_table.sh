@@ -53,6 +53,9 @@ for sumstat in $sumstat1 $sumstat2; do
     elif [ `zcat $sumstat | head -n1 | grep BETA | wc -l` -gt 0 ]; then
         n_beta=`zcat $sumstat | head -n1 | sed 's/	/\n/g' | grep -n BETA | cut -d: -f1`
         zcat $sumstat | awk -v n_z=$n_z -v n_beta=$n_beta '{print $1,$5,$6,$4,$n_z,$n_beta}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
+    elif [ `zcat $sumstat | head -n1 | grep LOGODDS | wc -l` -gt 0 ]; then
+        n_beta=`zcat $sumstat | head -n1 | sed 's/	/\n/g' | grep -n LOGODDS | cut -d: -f1`
+        zcat $sumstat | awk -v n_z=$n_z -v n_beta=$n_beta '{print $1,$5,$6,$4,$n_z,$n_beta}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
     else
         zcat $sumstat | awk -v n_z=$n_z '{print $1,$5,$6,$4,$n_z,"NA"}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
     fi
