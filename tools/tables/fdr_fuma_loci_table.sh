@@ -31,7 +31,7 @@ outfile=$3
 
 tag1=`basename $fdr_fuma_snp_table | cut -d'_' -f1`
 tag2=`basename $fdr_fuma_snp_table | cut -d'_' -f3`
-echo "locusnum	CHR	LEAD_SNP	LEAD_BP	MinBP	MaxBP	FDR	non_effect_allele	effect_allele	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag1}_SE	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	${tag2}_SE	Concordant_Effect" > $outfile
+echo "locusnum	CHR	LEAD_SNP	LEAD_BP	MinBP	MaxBP	FDR	A1	A2	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag1}_SE	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	${tag2}_SE	Concordant_Effect" > $outfile
 
 sort -s -k3,3 $fdr_clump_loci_file > $fdr_clump_loci_file.sorted
 sort -s -k3,3 $fdr_fuma_snp_table > $fdr_fuma_snp_table.sorted
