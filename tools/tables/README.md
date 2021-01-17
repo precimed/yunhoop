@@ -106,7 +106,7 @@ sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv trait1_vs_trait2_snps_conj.
 ### fuma_gene_table.sh
 
 **Function**
-This script generates data for supplementary gene table based on FUMA analysis.
+This script generates data for supplementary gene table from FUMA analysis.
 
 **Usage** ``sh fuma_gene_table.sh fuma_gene_file outfile``
 
@@ -117,4 +117,21 @@ This script generates data for supplementary gene table based on FUMA analysis.
 **Example**
 ```
 sh fuma_gene_table.sh genes.txt trait1_vs_trait2_genes.txt
+```
+
+### fdr_fuma_eqtl_table.sh
+
+**Function**
+This script generates data for supplementary eqtl table from FDR/FUMA analysis.
+
+**Usage** ``sh fdr_fuma_eqtl_table.sh fdr_clump_loci_file fuma_eqtl_file outfile``
+
+**Arguments**
+* `fdr_clump_loci_file` - fdr clumping loci file
+* `fuma_eqtl_table` - file that contains fuma eqtl info
+* `outfile` - output file
+
+**Example**
+```
+sh fuma_eqtl_table.sh conj.result.clump.loci.csv eqtl.txt trait1_vs_trait2_eqtl.txt
 ```

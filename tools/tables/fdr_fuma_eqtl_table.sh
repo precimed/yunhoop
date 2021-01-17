@@ -1,8 +1,8 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script generates data for supplementary eqtl table based on FUMA
-# analysis, but WITHOUT ANY WARRANTY.
+# This script generates data for supplementary eqtl table from FUMA analysis,
+# but WITHOUT ANY WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 
