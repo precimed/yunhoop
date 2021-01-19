@@ -29,7 +29,8 @@ if [ $# -lt 7 ]; then
   echo "           manh_colorlist2 - manhattan plot color (default 1)
                    [1 3 5 7 9 11 13 15 17 19; 2 4 6 8 10 12 14 16 18 20;
                    orange sky_blue bluish_green yellow blue vermillion
-                   reddish_purple black]"
+                   reddish_purple black, or any colors listed on
+                   https://python-graph-gallery.com/100-calling-a-color-with-seaborn]"
   echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 N Y N Y N Y N'
   echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 Y Y Y Y Y Y Y "[0 0 1]" 1'
   exit 0
