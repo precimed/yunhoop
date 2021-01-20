@@ -1,0 +1,4 @@
+mood_scz_conj005_loci.csv	SCZ_MOOD
+mood_bip_conj005_loci.csv	BIP_MOOD
+mood_dep_conj005_loci.csv	DEP_MOOD
+mood_adhd_conj005_loci.csv	ADHD_MOOD

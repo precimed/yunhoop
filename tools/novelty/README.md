@@ -2,6 +2,7 @@
 
 * [identify_overlap_and_novel_loci.sh](#identify_overlap_and_novel_locish)
 * [check_loci_in_gwasc.sh](#check_loci_in_gwascsh)
+* [identify_overlap_loci.sh](#identify_overlap_locish)
 
 ## Summary of scripts
 
@@ -45,4 +46,24 @@ locus is considered unnovel.
 ```
 sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'depress'
 sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'major depressive disorder'
+```
+
+### identify_overlap_loci.sh
+
+**Function**
+This script identifies overlapping loci across multiple loci files (which may requires manual
+cleaning of certain larger groups of specific loci)
+
+**Usage** ``sh identify_overlap_loci.sh list_of_loci_files outfile``
+
+**Arguments**
+* `list_of_loci_files` - file that includes paths to loci files with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP|locusnum_LeadSNP]) and tags
+* `outfile` - out file that contains shared loci groups
+
+**Example**
+```
+sh identify_overlap_loci.sh mood_psych_conj005_loci.txt mood_psych_conj005_shared_loci.txt
+
+mood_psych_conj005_loci.txt: https://github.com/precimed/yunhoop/blob/master/config/mood_psych_conj005_loci.txt
+mood_bip_conj005_loci.csv: https://github.com/precimed/yunhoop/blob/master/config/mood_bip_conj005_loci.csv
 ```
