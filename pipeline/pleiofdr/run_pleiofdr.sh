@@ -11,7 +11,7 @@
 
 #-------------------------------------------------------------------------#
 
-if [ $# -lt 7 ]; then
+if [ $# -lt 9 ]; then
   echo "Usage:     sh run_pleiofdr.sh TRAIT1 TRAIT2 run_condfdr_flag run_conjfdr_flag run_clump_cond_flag run_clump_conj_flag run_on_cluster_flag [manh_colorlist]"
   echo "Arguments: TRAIT1 - summary statistics name of trait1"
   echo "           TRAIT2 - summary statistics name of trait2"
@@ -33,6 +33,7 @@ if [ $# -lt 7 ]; then
                    https://python-graph-gallery.com/100-calling-a-color-with-seaborn]"
   echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 N Y N Y N Y N'
   echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 Y Y Y Y Y Y Y "[0 0 1]" 1'
+  echo 'Example:   sh run_pleiofdr.sh UKB_MOOD_2019 CTG_COG_2018 N N N N N Y N "[0.5 0.5 0]" y'
   exit 0
 fi
 
