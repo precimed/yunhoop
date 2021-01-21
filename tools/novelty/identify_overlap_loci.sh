@@ -1,9 +1,8 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script identifies overlapping loci across multiple loci files (which
-# may requires manual cleaning of certain larger groups of specific loci),
-# but WITHOUT ANY WARRANTY.
+# This script identifies overlapping loci across multiple loci files, but
+# WITHOUT ANY WARRANTY.
 
 # Authors: Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 
@@ -30,8 +29,33 @@ cat $files | awk '{print $1,$2,$3}' | sort | uniq | while read line; do
     minbp=`echo $line | cut -d' ' -f2`
     maxbp=`echo $line | cut -d' ' -f3`
     num=`awk -v chr=$chr -v minbp=$minbp -v maxbp=$maxbp '$1==chr && ($2>=minbp && $2<=maxbp || $3>=minbp && $3<=maxbp || $2<minbp && $3>maxbp)' $files | wc -l`
-    if [ $num -gt 1 ]; then
-        echo $chr $minbp $maxbp
+    if [ $num -gt 2 ]; then
+        skip='N'
+        for i in `awk -v chr=$chr -v minbp=$minbp -v maxbp=$maxbp '$1==chr && ($2>=minbp && $2<=maxbp || $3>=minbp && $3<=maxbp || $2<minbp && $3>maxbp)' $files | awk '{print $1"_"$2"_"$3}'`; do
+            chr1=`echo $i | cut -d'_' -f1`
+            minbp1=`echo $i | cut -d'_' -f2`
+            maxbp1=`echo $i | cut -d'_' -f3`
+            for j in `awk -v chr=$chr -v minbp=$minbp -v maxbp=$maxbp '$1==chr && ($2>=minbp && $2<=maxbp || $3>=minbp && $3<=maxbp || $2<minbp && $3>maxbp)' $files | awk '{print $1"_"$2"_"$3}'`; do
+                chr2=`echo $j | cut -d'_' -f1`
+                minbp2=`echo $j | cut -d'_' -f2`
+                maxbp2=`echo $j | cut -d'_' -f3`
+                if [ $minbp1 -gt $maxbp2 ] || [ $maxbp1 -lt $minbp2 ]; then
+                    skip='Y'
+                    break
+                fi
+            done
+            if [ "$skip" = "Y" ]; then
+                echo $chr1 $minbp1 $maxbp1
+                break
+            fi
+        done
+        if [ "$skip" = "N" ]; then
+            #echo $chr $minbp $maxbp
+            awk -v chr=$chr -v minbp=$minbp -v maxbp=$maxbp '$1==chr && ($2>=minbp && $2<=maxbp || $3>=minbp && $3<=maxbp || $2<minbp && $3>maxbp) {print FILENAME,$1,$2,$3,$4}' $files | sed 's/ $//' >> $outfile
+            echo "" >> $outfile
+        fi
+    elif [ $num -gt 1 ]; then
+        #echo $chr $minbp $maxbp
         awk -v chr=$chr -v minbp=$minbp -v maxbp=$maxbp '$1==chr && ($2>=minbp && $2<=maxbp || $3>=minbp && $3<=maxbp || $2<minbp && $3>maxbp) {print FILENAME,$1,$2,$3,$4}' $files | sed 's/ $//' >> $outfile
         echo "" >> $outfile
     fi
@@ -47,8 +71,3 @@ sed -i ':a;N;/\n$/!s/\n/; /;ta;P;d' $outfile
 #remove duplicates and split into groups again
 cat $outfile | sort | uniq | awk '{ print length, $0 }' | sort -n -r | cut -d' ' -f2- | sed 's/$/\n/' | sed 's/; /\n/g' > $outfile.tmp
 mv $outfile.tmp  $outfile
-
-echo "Please manually remove larger groups consist of below lines from $(basename $outfile):"
-echo "---------------------------------------------------"
-cat $outfile | grep -v '^$' | sort | uniq -c | sort | awk '$1>1 {print $2,$3,$4,$5,$6}'
-echo "---------------------------------------------------"
