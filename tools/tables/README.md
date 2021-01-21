@@ -76,7 +76,7 @@ p-value, good to distiguish between them.
 
 **Example**
 ```
-sh fdr_fuma_snp_table.sh conj.result.clump.snps.csv 0.1 0.6 snps.txt sumstat/std/trait1.sumstats.gz sumstat/std/trait2.sumstats.gz tag1 tag2 .
+sh fdr_fuma_snp_table.sh conj.result.clump.snps.csv 0.1 0.6 snps.txt sumstat/std/trait1.sumstats.gz sumstat/std/trait2.sumstats.gz tag1 tag2 outfolder
 ```
 
 ### fdr_fuma_loci_table.sh
@@ -101,6 +101,7 @@ from FDR/FUMA analysis.
 **Example**
 ```
 sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv trait1_vs_trait2_snps_conj.txt trait1_vs_trait2_loci.txt trait1_old_loci.csv trait2_old_loci.csv conj.result.clump.snps.csv gwascatalog.txt keyword1 keyword2
+sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv adhd_vs_mood_snps_conj.txt adhd_vs_mood_loci.txt adhd_gwas_loci.csv mood_gwas_loci.csv conj.result.clump.snps.csv gwascatalog.txt 'attention deficit' 'mood instability'
 ```
 
 ### fuma_gene_table.sh

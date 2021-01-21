@@ -21,6 +21,7 @@ if [ $# -ne 3 ] && [ $# -ne 5 ] && [ $# -ne 9 ]; then
   echo "           keyword1 - keyword of trait1, use '-' for none"
   echo "           keyword2 - keyword of trait2, use '-' for none"
   echo "Example:   sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv trait1_vs_trait2_snps_conj.txt trait1_vs_trait2_loci.txt trait1_old_loci.csv trait2_old_loci.csv conj.result.clump.snps.csv gwascatalog.txt keyword1 keyword2"
+  echo "Example:   sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv adhd_vs_mood_snps_conj.txt adhd_vs_mood_loci.txt adhd_gwas_loci.csv mood_gwas_loci.csv conj.result.clump.snps.csv gwascatalog.txt 'attention deficit' 'mood instability'"
   exit 0
 fi
 #-------------------------------------------------------------------------#

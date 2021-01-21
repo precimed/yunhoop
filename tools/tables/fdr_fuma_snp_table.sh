@@ -21,7 +21,7 @@ if [ $# -lt 9 ]; then
   echo "           tag1 - tag of trait1"
   echo "           tag2 - tag of trait2"
   echo "           outfolder - output folder"
-  echo "Example:   sh fdr_fuma_snp_table.sh conj.result.clump.snps.csv 0.1 0.6 snps.txt sumstat/std/trait1.sumstats.gz sumstat/std/trait2.sumstats.gz tag1 tag2 ."
+  echo "Example:   sh fdr_fuma_snp_table.sh conj.result.clump.snps.csv 0.1 0.6 snps.txt sumstat/std/trait1.sumstats.gz sumstat/std/trait2.sumstats.gz tag1 tag2 outfolder"
   exit 0
 fi
 #-------------------------------------------------------------------------#
@@ -52,7 +52,7 @@ for sumstat in $sumstat1 $sumstat2; do
         n_or=`zcat $sumstat | head -n1 | sed 's/	/\n/g' | grep -n OR | cut -d: -f1`
         if [ `zcat $sumstat | head -n1 | sed 's/	/\n/g' | grep SE | grep -v NCASE | wc -l` -gt 0 ]; then
             n_se=`zcat $sumstat | head -n1 | sed 's/	/\n/g' | grep -n SE | grep -v NCASE | cut -d: -f1`
-            zcat $sumstat | tail -n +2 | awk -v n_z=$n_z -v n_or=$n_or -v n_se=$se '{print $1,$5,$6,$4,$n_z,log($n_or),$n_se/$n_or}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
+            zcat $sumstat | tail -n +2 | awk -v n_z=$n_z -v n_or=$n_or -v n_se=$n_se '{print $1,$5,$6,$4,$n_z,log($n_or),$n_se/$n_or}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
         else
             zcat $sumstat | tail -n +2 | awk -v n_z=$n_z -v n_or=$n_or '{if($n_z==0) print $1,$5,$6,$4,$n_z,log($n_or),0; else print $1,$5,$6,$4,$n_z,log($n_or),log($n_or)/$n_z}' | sort -s -k1,1 > $outfolder/${sm%%.*}.txt
         fi
