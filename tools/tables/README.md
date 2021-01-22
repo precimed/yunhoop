@@ -120,6 +120,22 @@ This script generates data for supplementary gene table from FUMA analysis.
 sh fuma_gene_table.sh genes.txt trait1_vs_trait2_genes.txt
 ```
 
+### fuma_go_table.sh
+
+**Function**
+This script generates data for supplementary gene ontology gene-sets table from FUMA analysis
+
+**Usage** ``sh fuma_go_table.sh fuma_gs_file outfile``
+
+**Arguments**
+* `fuma_gs_file` - file that contains fuma gene-sets info
+* `outfile` - output file
+
+**Example**
+```
+sh fuma_go_table.sh GS.txt trait1_vs_trait2_genes.txt
+```
+
 ### fdr_fuma_eqtl_table.sh
 
 **Function**
