@@ -51,7 +51,7 @@ sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'major depr
 ### identify_overlap_loci.sh
 
 **Function**
-This script identifies overlapping loci across multiple loci files.
+This script identifies cross-trait overlapping loci (under linux).
 
 **Usage** ``sh identify_overlap_loci.sh list_of_loci_files outfile``
 

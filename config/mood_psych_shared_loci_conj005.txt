@@ -1,0 +1,9 @@
+shared_loci_file=mood_psych_conj005_shared_loci.txt
+resfdr_SCZ=UKB_MOOD_2019_vs_CLOZUK_SCZ_2018_withPGC_conjfdr/result.mat.csv
+resfdr_BIP=UKB_MOOD_2019_vs_PGC_BIP_2019_wave3_conjfdr/result.mat.csv
+resfdr_DEP=UKB_MOOD_2019_vs_PGC_DEP_2018_with23andMe_noUKBB_conjfdr/result.mat.csv
+resfdr_ADHD=UKB_MOOD_2019_vs_PGC_ADHD_2017_EUR_conjfdr/result.mat.csv
+snpfuma_SCZ=SCZ_vs_MOOD_snps.txt
+snpfuma_BIP=BIP3_vs_MOOD_snps.txt
+snpfuma_DEP=DEP_vs_MOOD_snps.txt
+snpfuma_ADHD=ADHD_vs_MOOD_snps.txt

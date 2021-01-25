@@ -1,7 +1,7 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script identifies overlapping loci across multiple loci files, but
+# This script identifies cross-trait overlapping loci (under linux), but
 # WITHOUT ANY WARRANTY.
 
 # Authors: Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
@@ -45,17 +45,16 @@ cat $files | awk '{print $1,$2,$3}' | sort | uniq | while read line; do
                 fi
             done
             if [ "$skip" = "Y" ]; then
-                echo $chr1 $minbp1 $maxbp1
                 break
             fi
         done
         if [ "$skip" = "N" ]; then
-            #echo $chr $minbp $maxbp
+            echo $chr $minbp $maxbp
             awk -v chr=$chr -v minbp=$minbp -v maxbp=$maxbp '$1==chr && ($2>=minbp && $2<=maxbp || $3>=minbp && $3<=maxbp || $2<minbp && $3>maxbp) {print FILENAME,$1,$2,$3,$4}' $files | sed 's/ $//' >> $outfile
             echo "" >> $outfile
         fi
     elif [ $num -gt 1 ]; then
-        #echo $chr $minbp $maxbp
+        echo $chr $minbp $maxbp
         awk -v chr=$chr -v minbp=$minbp -v maxbp=$maxbp '$1==chr && ($2>=minbp && $2<=maxbp || $3>=minbp && $3<=maxbp || $2<minbp && $3>maxbp) {print FILENAME,$1,$2,$3,$4}' $files | sed 's/ $//' >> $outfile
         echo "" >> $outfile
     fi
