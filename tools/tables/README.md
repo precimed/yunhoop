@@ -164,7 +164,7 @@ This script identifies transdiagnostic loci shared across multiple traits from F
 **Usage** ``sh fdr_fuma_trans_loci.sh list_of_loci_files outfile``
 
 **Arguments**
-* `list_of_loci_files` - file that includes paths to shared loci file, result.mat.csv of fdr, and fdr_fuma_snp_table, make sure that absolute or relative path to be specified
+* `list_of_loci_files` - file that includes paths to shared loci file, and fdr_fuma_snp_table, make sure that absolute or relative path to be specified
 * `outfile` - out file that contains transdiagnostic loci fdr/fuma results
 
 **Example**
