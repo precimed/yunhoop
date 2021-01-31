@@ -106,7 +106,7 @@ else
     export manh_colorlist2=${11}
 fi
 
-export legend_location="upper left"
+export legend_location="upper right"
 
 #-------------------------------------------------------------------------#
 

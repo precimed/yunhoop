@@ -2,7 +2,7 @@
 
 * [mixer_uni_table.sh](#mixer_uni_tablesh)
 * [mixer_bi_table.sh](#mixer_bi_tablesh)
-* [fdr_fuma_input.sh](#fdr_fuma_inputsh)
+* [fdr_fuma_snp_input.sh](#fdr_fuma_snp_inputsh)
 * [fdr_fuma_snp_table.sh](#fdr_fuma_snp_tablesh)
 * [fdr_fuma_loci_table.sh](#fdr_fuma_loci_tablesh)
 * [fuma_gene_table.sh](#fuma_gene_tablesh)
@@ -36,12 +36,12 @@ table.
 * `bi_csv` - csv file containing bivariate info
 * `outfile` - output file
 
-### fdr_fuma_input.sh
+### fdr_fuma_snp_input.sh
 
 **Function**
 This script generates a snp list for FUMA analysis.
 
-**Usage** ``sh fdr_fuma_input.sh fdr_clump_snp_file fdr r2 outfile``
+**Usage** ``sh fdr_fuma_snp_input.sh fdr_clump_snp_file fdr r2 outfile``
 
 **Arguments**
 * `fdr_clump_snp_file` - fdr clumping snp file
@@ -51,7 +51,7 @@ This script generates a snp list for FUMA analysis.
 
 **Example**
 ```
-sh fdr_fuma_input.sh conj.result.clump.snps.csv 0.1 0.6 trait1_vs_trait2_input_snps.txt
+sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 trait1_vs_trait2_input_snps.txt
 ```
 
 ### fdr_fuma_snp_table.sh
