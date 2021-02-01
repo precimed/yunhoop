@@ -17,7 +17,7 @@ if [ $# -ne 3 ] && [ $# -ne 5 ] && [ $# -ne 9 ]; then
   echo "           trait1locifile - old loci file with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP]) of trait1, use '-' for none"
   echo "           trait2locifile - old loci file with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP]) of trait2, use '-' for none"
   echo "           fdr_snp_table - fdr clumping snp file, use '-' for none"
-  echo "           fuma_gwasc - fuma gwas catalog file, use '-' for none"
+  echo "           fuma_gwasc - fuma gwascatalog file, use '-' for none"
   echo "           keywords1 - quoted keywords of trait1 combined with &, delimited by |, use - for none"
   echo "           keywords2 - quoted keywords of trait1 combined with &, delimited by |, use - for none"
   echo "Example:   sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv adhd_vs_mood_snps_conj.txt adhd_vs_mood_loci.txt adhd_gwas_loci.csv mood_gwas_loci.csv conj.result.clump.snps.csv gwascatalog.txt 'attention & deficit & hyperact' 'mood & instab'"
@@ -36,7 +36,7 @@ echo "locusnum	CHR	LEAD_SNP	LEAD_BP	MinBP	MaxBP	FDR	A1	A2	nearestGene	dist	func	
 sort -s -k3,3 $fdr_clump_loci_file > $fdr_clump_loci_file.sorted
 sort -s -k3,3 $fdr_fuma_snp_table > $fdr_fuma_snp_table.sorted
 
-join -1 3 -2 3 -a 1 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | grep -v FDR | awk '{print $2,$3,$1,$4,$5,$6,$7,$15,$16,$20,$21,$22,$23,$24,$25,$26,$30,$31,$32,$33,$34,$35,$36,$37,$38}' OFS='\t' | sort -n -k2,2 -k4,4 >> $outfile
+join -1 3 -2 3 -a 1 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | grep -v FDR | awk '{print $2,$3,$1,$4,$5,$6,$7,$16,$17,$18,$19,$20,$21,$22,$23,$24,$28,$29,$30,$31,$32,$33,$34,$35,$36}' OFS='\t' | sort -n -k1,1 >> $outfile
 
 if [ $# -ge 5 ]; then
     trait1locifile=$4
@@ -109,7 +109,7 @@ if [ $# -eq 9 ]; then
     fi
 fi
 if [ $# -ge 5 ]; then
-    echo "locusnum	novel_in_novdb	novel_in_gwas" > ${outfile%.*}_${tag1}_novelty.txt
+    echo "locusnum	novel_in_novdb	novel_in_gwasc" > ${outfile%.*}_${tag1}_novelty.txt
     if [ -f ${outfile%.*}_${tag1}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag1}_novel_loci.tmp4 ]; then
         paste ${outfile%.*}_${tag1}_novel_loci.tmp2 ${outfile%.*}_${tag1}_novel_loci.tmp4 | awk '{print $3,$2,$4}' OFS='\t' >> ${outfile%.*}_${tag1}_novelty.txt
     elif [ ! -f ${outfile%.*}_${tag1}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag1}_novel_loci.tmp4 ]; then
@@ -118,7 +118,10 @@ if [ $# -ge 5 ]; then
         awk '{print $0,"Yes"}' OFS='\t' ${outfile%.*}_${tag1}_novel_loci.tmp2 >> ${outfile%.*}_${tag1}_novelty.txt
     fi
 
-    echo "locusnum	novel_in_novdb	novel_in_gwas" > ${outfile%.*}_${tag2}_novelty.txt
+    awk '{if($2=="Yes" && $3=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' ${outfile%.*}_${tag1}_novelty.txt | sed "1s/No$/Novel_in_${tag1}/" > ${outfile%.*}_${tag1}_novelty.tmp
+    mv ${outfile%.*}_${tag1}_novelty.tmp ${outfile%.*}_${tag1}_novelty.txt
+
+    echo "locusnum	novel_in_novdb	novel_in_gwasc" > ${outfile%.*}_${tag2}_novelty.txt
     if [ -f ${outfile%.*}_${tag2}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag2}_novel_loci.tmp4 ]; then
         paste ${outfile%.*}_${tag2}_novel_loci.tmp2 ${outfile%.*}_${tag2}_novel_loci.tmp4 | awk '{print $3,$2,$4}' OFS='\t' >> ${outfile%.*}_${tag2}_novelty.txt
     elif [ ! -f ${outfile%.*}_${tag2}_novel_loci.tmp2 ] && [ -f ${outfile%.*}_${tag2}_novel_loci.tmp4 ]; then
@@ -126,7 +129,11 @@ if [ $# -ge 5 ]; then
     elif [ -f ${outfile%.*}_${tag2}_novel_loci.tmp2 ] && [ ! -f ${outfile%.*}_${tag2}_novel_loci.tmp4 ]; then
         awk '{print $0,"Yes"}' OFS='\t' ${outfile%.*}_${tag2}_novel_loci.tmp2 >> ${outfile%.*}_${tag2}_novelty.txt
     fi
-    paste $outfile ${outfile%.*}_${tag1}_novelty.txt ${outfile%.*}_${tag2}_novelty.txt | cut -f1-25,27-28,30-31 | awk '{if($26=="Yes" && $27=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | awk '{if($28=="Yes" && $29=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' | cut -f1-25,30-31 | sed "1s/No	No/Novel_in_${tag1}	Novel_in_${tag2}/" > ${outfile%.*}.tmp4
+
+    awk '{if($2=="Yes" && $3=="Yes") print $0,"Yes"; else print $0,"No"}' OFS='\t' ${outfile%.*}_${tag2}_novelty.txt | sed "1s/No$/Novel_in_${tag2}/" > ${outfile%.*}_${tag2}_novelty.tmp
+    mv ${outfile%.*}_${tag2}_novelty.tmp ${outfile%.*}_${tag2}_novelty.txt
+
+    paste $outfile ${outfile%.*}_${tag1}_novelty.txt ${outfile%.*}_${tag2}_novelty.txt | cut -f1-25,29,33 > ${outfile%.*}.tmp4
     mv ${outfile%.*}.tmp4 $outfile
 fi
 

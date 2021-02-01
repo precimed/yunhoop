@@ -97,7 +97,7 @@ from FDR/FUMA analysis.
 * `trait1locifile` - old loci file with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP]) of trait1, use '-' for none
 * `trait2locifile` - old loci file with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP]) of trait2, use '-' for none
 * `fdr_snp_table` - fdr clumping snp file, use '-' for none
-* `fuma_gwasc` - fuma gwas catalog file, use '-' for none
+* `fuma_gwasc` - fuma gwascatalog file, use '-' for none
 * `keywords1` - quoted keywords of trait1 combined with &, delimited by |, use - for none
 * `keywords2` - quoted keywords of trait2 combined with &, delimited by |, use - for none
 
