@@ -35,17 +35,17 @@ This script checks whether the loci reported by cfdr analysis have been
 registered in gwascatalog with respect to specific phenotype, if so the
 locus is considered unnovel.
 
-**Usage** ``sh check_loci_in_gwasc.sh fdr_clump_snp_file fuma_gwascatalog_file keyword``
+**Usage** ``sh check_loci_in_gwasc.sh fdr_clump_snp_file fuma_gwascatalog_file keywords``
 
 **Arguments**
 * `fdr_clump_snp_file` - fdr clumping snp file
 * `fuma_gwascatalog_file` - fuma gwascatalog file
-* `keyword` - keyword such as name or partial name of specified trait, can be multiple words within ''
+* `keywords` - keywords with respect to specific phenotype, can be multiple words combined with & and multiple patterns delimited with | within quotes
+& `outfile` - output file including hits of gwascatalog
 
 **Example**
 ```
-sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'depress'
-sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'major depressive disorder'
+sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'high & density & lipoprotein | hdl & cholesterol' hdl_gwasc.txt'
 ```
 
 ### identify_overlap_loci.sh

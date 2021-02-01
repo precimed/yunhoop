@@ -88,7 +88,7 @@ sh fdr_fuma_snp_table.sh conj.result.clump.snps.csv 0.1 0.6 snps.txt sumstat/std
 This script generates data for supplementary loci table (FDR+FUMA+SUMSTAT)
 from FDR/FUMA analysis.
 
-**Usage** ``sh fdr_fuma_loci_table.sh fdr_clump_loci_file fdr_fuma_snp_table outfile [trait1locifile trait2locifile] [fdr_snp_table fuma_gwasc keyword1 keyword2]``
+**Usage** ``sh fdr_fuma_loci_table.sh fdr_clump_loci_file fdr_fuma_snp_table outfile [trait1locifile trait2locifile] [fdr_snp_table fuma_gwasc keywords1 keywords2]``
 
 **Arguments**
 * `fdr_clump_loci_file` - fdr clumping loci file
@@ -98,13 +98,12 @@ from FDR/FUMA analysis.
 * `trait2locifile` - old loci file with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP]) of trait2, use '-' for none
 * `fdr_snp_table` - fdr clumping snp file, use '-' for none
 * `fuma_gwasc` - fuma gwas catalog file, use '-' for none
-* `keyword1` - keyword of trait1, use '-' for none
-* `keyword2` - keyword of trait2, use '-' for none
+* `keywords1` - quoted keywords of trait1 combined with &, delimited by |, use - for none
+* `keywords2` - quoted keywords of trait2 combined with &, delimited by |, use - for none
 
 **Example**
 ```
-sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv trait1_vs_trait2_snps_conj.txt trait1_vs_trait2_loci.txt trait1_old_loci.csv trait2_old_loci.csv conj.result.clump.snps.csv gwascatalog.txt keyword1 keyword2
-sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv adhd_vs_mood_snps_conj.txt adhd_vs_mood_loci.txt adhd_gwas_loci.csv mood_gwas_loci.csv conj.result.clump.snps.csv gwascatalog.txt 'attention deficit' 'mood instability'
+sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv adhd_vs_mood_snps_conj.txt adhd_vs_mood_loci.txt adhd_gwas_loci.csv mood_gwas_loci.csv conj.result.clump.snps.csv gwascatalog.txt 'attention & deficit & hyperact' 'mood & instab'
 ```
 
 ### fuma_gene_table.sh
