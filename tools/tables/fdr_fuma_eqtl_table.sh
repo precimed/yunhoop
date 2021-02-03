@@ -14,7 +14,7 @@ if [ $# -lt 2 ]; then
   echo "Arguments: fdr_clump_loci_file - fdr clumping loci file"
   echo "           fuma_eqtl_file - file that contains fuma eqtl info"
   echo "           outfile - output file"
-  echo "Example:   sh fuma_eqtl_table.sh conj.result.clump.loci.csv eqtl.txt trait1_vs_trait2_eqtl.txt"
+  echo "Example:   sh fuma_eqtl_table.sh conj.result.clump.loci.csv eqtl.txt TRAIT1_vs_TRAIT2_eqtl.txt"
   exit 0
 fi
 #-------------------------------------------------------------------------#

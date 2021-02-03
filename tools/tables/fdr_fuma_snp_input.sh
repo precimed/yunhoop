@@ -1,7 +1,8 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script generates a snp list for FUMA analysis, but WITHOUT ANY WARRANTY.
+# This script generates a snp list from PleioFDR output for FUMA analysis,
+# but WITHOUT ANY WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com)
 
@@ -14,7 +15,7 @@ if [ $# -lt 4 ]; then
   echo "           fdr - FDR filter for selecting snps"
   echo "           r2 - r2 filter for selecting snps"
   echo "           outfile - output file including selected snp list"
-  echo "Example:   sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 trait1_vs_trait2_input_snps.txt"
+  echo "Example:   sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 TRAIT1_vs_TRAIT2_input_snps.txt"
   exit 0
 fi
 #-------------------------------------------------------------------------#

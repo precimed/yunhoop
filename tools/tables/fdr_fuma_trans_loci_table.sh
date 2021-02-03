@@ -2,7 +2,7 @@
 #--------------------------- Description ---------------------------------#
 
 # This script identifies transdiagnostic loci shared across multiple traits
-# from FDR/FUMA analysis, but WITHOUT ANY WARRANTY.
+# from PleioFDR/FUMA analysis, but WITHOUT ANY WARRANTY.
 
 # Authors: Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 
