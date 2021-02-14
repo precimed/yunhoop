@@ -88,7 +88,7 @@ sh fdr_fuma_snp_table.sh conj.result.clump.snps.csv 0.1 0.6 snps.txt sumstat/std
 This script generates data for supplementary loci table (PleioFDR+FUMA+SUMSTAT)
 from PleioFDR/FUMA analysis.
 
-**Usage** ``sh fdr_fuma_loci_table.sh fdr_clump_loci_file fdr_fuma_snp_table outfile [trait1locifile trait2locifile] [fdr_snp_table fuma_gwasc keywords1 keywords2]``
+**Usage** ``sh fdr_fuma_loci_table.sh fdr_clump_loci_file fdr_fuma_snp_table outfile [trait1locifile trait2locifile] [fuma_gwasc keywords1 keywords2]``
 
 **Arguments**
 * `fdr_clump_loci_file` - fdr clumping loci file
@@ -96,14 +96,13 @@ from PleioFDR/FUMA analysis.
 * `outfile` - output file, recommanded to name as TRAIT1_vs_TRAIT2_loci.txt
 * `trait1locifile` - old loci file with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP]) of trait1, use '-' for none
 * `trait2locifile` - old loci file with 3 or 4 columns (CHR, MinBP, MaxBP, [leadSNP]) of trait2, use '-' for none
-* `fdr_snp_table` - fdr clumping snp file, use '-' for none
 * `fuma_gwasc` - fuma gwascatalog file, use '-' for none
 * `keywords1` - quoted keywords of trait1 combined with &, delimited by |, use '-' for none
 * `keywords2` - quoted keywords of trait2 combined with &, delimited by |, use '-' for none
 
 **Example**
 ```
-sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv ADHD_vs_MOOD_snps.txt ADHD_vs_MOOD_loci.txt adhd_gwas_loci.csv mood_gwas_loci.csv conj.result.clump.snps.csv gwascatalog.txt 'attention & deficit & hyperact' 'mood & instab'
+sh fdr_fuma_loci_table.sh conj.result.clump.loci.csv ADHD_vs_MOOD_snps.txt ADHD_vs_MOOD_loci.txt adhd_gwas_loci.csv mood_gwas_loci.csv gwascatalog.txt 'attention & deficit & hyperact' 'mood & instab'
 ```
 
 ### fdr_fuma_gene_table.sh
