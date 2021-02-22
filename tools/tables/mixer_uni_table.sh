@@ -1,7 +1,7 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
-# This script extracts data from MiXeR analysis for supplementary univariate
-# table, but WITHOUT ANY WARRANTY.
+# This script tries to extract data from MiXeR analysis for supplementary
+# univariate table WITHOUT WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com)
 

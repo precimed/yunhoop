@@ -1,9 +1,9 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script checks whether the loci reported by fdr analysis have been
-# registered in gwascatalog with respect to specific phenotype, if so the
-# loci are considered unnovel, but WITHOUT ANY WARRANTY.
+# This script tries to check whether the loci reported by fdr analysis have
+# been registered in gwascatalog with respect to specific phenotype, in which 
+# case the loci are considered unnovel WITHOUT WARRANTY.
 
 # Authors: Yunhan Chu (yunhanch@gmail.com), Weiqiu Cheng, Guy F. L. Hindley
 

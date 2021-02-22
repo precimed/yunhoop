@@ -1,6 +1,6 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
-# This script converts a general mostest csv to sumstat, but WITHOUT ANY
+# This script tries to convert a raw gwas file to standard sumstat WITHOUT
 # WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com)

@@ -1,8 +1,8 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script identifies cross-trait overlapping loci (under linux), but
-# WITHOUT ANY WARRANTY.
+# This script tries to identify cross-trait overlapping loci (under linux)
+# WITHOUT WARRANTY.
 
 # Authors: Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 

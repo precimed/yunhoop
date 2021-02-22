@@ -1,9 +1,9 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script generates data for supplementary snp table (FUMA+SUMSTAT)
-# based on selected snp subset (fdr,r2) from PleioFDR/FUMA analysis, but
-# WITHOUT ANY WARRANTY.
+# This script tries to generate data for supplementary snp table (FUMA+SUMSTAT)
+# based on selected snp subset (fdr,r2) from PleioFDR/FUMA analysis WITHOUT
+# WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 

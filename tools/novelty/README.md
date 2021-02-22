@@ -9,9 +9,7 @@
 ### identify_overlap_and_novel_loci.sh
 
 **Function**
-This script compares latest loci contained in a new file against previous
-ones contained in an old file, and identifies and ouputs the overlapping
-and novel loci.
+This script tries to compare latest loci contained in a new file against previous ones contained in an old file, and identify and ouput overlapping and novel loci.
 
 **Usage** ``sh identify_overlap_and_novel_loci.sh newlocifile oldlocifile outprefix``
 
@@ -31,9 +29,7 @@ mood_gwas_loci.csv: https://github.com/precimed/yunhoop/blob/master/config/mood_
 ### check_loci_in_gwasc.sh
 
 **Function**
-This script checks whether the loci reported by cfdr analysis have been
-registered in gwascatalog with respect to specific phenotype, if so the
-locus is considered unnovel.
+This script tries to check whether the loci reported by fdr analysis have been registered in gwascatalog with respect to specific phenotype, in which case the loci are considered unnovel.
 
 **Usage** ``sh check_loci_in_gwasc.sh fdr_clump_snp_file fuma_gwascatalog_file keywords``
 
@@ -51,7 +47,7 @@ sh check_loci_in_gwasc.sh conj.result.clump.snps.csv gwascatalog.txt 'high & den
 ### identify_overlap_loci.sh
 
 **Function**
-This script identifies cross-trait overlapping loci (under linux).
+This script tries to identify cross-trait overlapping loci (under linux).
 
 **Usage** ``sh identify_overlap_loci.sh list_of_loci_files outfile``
 

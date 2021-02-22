@@ -1,0 +1,4 @@
+SCZ_vs_MOOD_loci.txt	SCZ
+BIP3_vs_MOOD_loci.txt	BIP
+DEP_vs_MOOD_loci.txt	DEP
+ADHD_vs_MOOD_loci.txt	ADHD

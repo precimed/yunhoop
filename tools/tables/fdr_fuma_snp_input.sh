@@ -1,8 +1,8 @@
 #!/bin/bash
 #--------------------------- Description ---------------------------------#
 
-# This script generates a snp list from PleioFDR output for FUMA analysis,
-# but WITHOUT ANY WARRANTY.
+# This script tries to generate a snp list from PleioFDR output for FUMA
+# analysis WITHOUT WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com)
 
