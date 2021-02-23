@@ -86,4 +86,8 @@ join -1 1 -2 1 -a 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp2 $outfolder/${sm2%%
 cut -f1-12,14- $outfile > $outfile.tmp
 mv $outfile.tmp $outfile
 
+n_tot=`tail -n +2 $outfile | wc -l`
+n_concord=`cut -f34 $outfile | grep TRUE | wc -l`
+echo $n_tot $n_concord | awk '{print $1,$2/$1}' OFMT="%.4f" | awk '{print $1,$2*100"%"}' | awk '{print "\t\t"$1"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"$2}' >> $outfile
+
 rm -f $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt $outfolder/${sm1%%.*}.txt $outfolder/${sm2%%.*}.txt $outfolder/fuma_snps_${tag1}_${tag2}.tmp $outfolder/fuma_snps_${tag1}_${tag2}.tmp2

@@ -33,7 +33,7 @@ tag2=`basename $fdr_fuma_snp_table | cut -d'_' -f3`
 echo "locusnum	CHR	LEAD_SNP	LEAD_BP	MinBP	MaxBP	FDR	A1	A2	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag1}_SE	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	${tag2}_SE	ConcordEffect" > $outfile
 
 sort -s -k3,3 $fdr_clump_loci_file > $fdr_clump_loci_file.sorted
-sort -s -k3,3 $fdr_fuma_snp_table > $fdr_fuma_snp_table.sorted
+head -n -1 $fdr_fuma_snp_table | sort -s -k3,3 > $fdr_fuma_snp_table.sorted
 
 join -1 3 -2 3 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | grep -v FDR | awk '{print $2,$3,$1,$4,$5,$6,$7,$16,$17,$22,$23,$24,$25,$26,$27,$28,$32,$33,$34,$35,$36,$37,$38,$39,$40}' OFS='\t' | sort -n -k1,1 >> $outfile
 
@@ -41,7 +41,7 @@ rm -f $fdr_clump_loci_file.tmp
 for loci in `join -1 3 -2 3 -a 1 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | grep -v locusnum | awk 'NF==7 {print $2}'`; do
     minbp=`awk -v loci=$loci '$1==loci {print $5}' $fdr_clump_loci_file`
     maxbp=`awk -v loci=$loci '$1==loci {print $6}' $fdr_clump_loci_file`
-    awk -v loci=$loci -v minbp=$minbp -v maxbp=$maxbp '$1==loci {print $1,$2,$3,$4,minbp,maxbp,$8}' OFS='\t' $fdr_fuma_snp_table | sort -n -k7,7 | head -n1 >> $fdr_clump_loci_file.tmp
+    awk -v loci=$loci -v minbp=$minbp -v maxbp=$maxbp '$1==loci {print $1,$2,$3,$4,minbp,maxbp,$8}' OFS='\t' $fdr_fuma_snp_table.sorted | sort -n -k7,7 | head -n1 >> $fdr_clump_loci_file.tmp
 done
 
 if [ -s $fdr_clump_loci_file.tmp ]; then
@@ -161,6 +161,12 @@ if [ -s $fdr_clump_loci_file.tmp.sorted ]; then
         mv $outfile.tmp $outfile
     done
 fi
+
+n_tot=`tail -n +2 $outfile | wc -l`
+n_concord=`cut -f25 $outfile | grep TRUE | wc -l`
+n_trait1=`cut -f26 $outfile | grep Yes | wc -l`
+n_trait2=`cut -f27 $outfile | grep Yes | wc -l`
+echo $n_tot $n_concord $n_trait1 $n_trait2 | awk '{print $1,$2/$1,$3,$4}' OFMT="%.4f" | awk '{print $1,$2*100"%",$3,$4}' | awk '{print $1"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"$2"\t"$3"\t"$4}' >> $outfile
 
 if [ -f ${trait1locifile%.*}.tmp ]; then
     rm ${trait1locifile%.*}.tmp

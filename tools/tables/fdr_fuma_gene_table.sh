@@ -23,7 +23,7 @@ fuma_gene_file=$2
 outfile=$3
 
 rm -f $outfile
-cut -f14 $fdr_fuma_snp_table | tail -n +2 | sort | uniq | sort -s > $outfile.tmp1
+cut -f14 $fdr_fuma_snp_table | head -n -1 | tail -n +2 | sort | uniq | sort -s > $outfile.tmp1
 tail -n +2 $fuma_gene_file | while read line; do
     echo $line | cut -d' ' -f22 | sed 's/;/\n/g' | sed 's/:/\n/g' | sort | uniq | sort -s > $outfile.tmp2
     if [ `join $outfile.tmp1 $outfile.tmp2 | wc -l` -gt 0 ]; then
@@ -40,5 +40,12 @@ awk '$26=="No"' $outfile.tmp | sed 's/ /	/g' >> $outfile
 
 cut -f1-5,7-22,24- $outfile > $outfile.tmp
 mv $outfile.tmp $outfile
+
+n_tot=`tail -n +2 $outfile | wc -l`
+n_pos=`cut -f14 $outfile | grep Yes | wc -l`
+n_eqtl=`cut -f17 $outfile | grep Yes | wc -l`
+n_ci=`cut -f22 $outfile | grep Yes | wc -l`
+n_cred=`cut -f24 $outfile | grep Yes | wc -l`
+echo $n_tot $n_pos $n_eqtl $n_ci $n_cred | awk '{print $1"\t\t\t\t\t\t\t\t\t\t\t\t\t"$2"\t\t\t"$3"\t\t\t\t\t"$4"\t\t"$5}' >> $outfile
 
 rm -f $outfile.tmp1 $outfile.tmp2

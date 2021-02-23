@@ -24,7 +24,7 @@ outfile=$2
 
 files=`awk '{print $1}' $list_of_loci_files | paste -s -d " "`
 rm -f $outfile
-cat $files | awk '{print $1,$2,$3}' | sort | uniq | while read line; do
+cat $files | awk '{print $1,$2,$3}' | sort | uniq | sort -n -k1,1 | while read line; do
     chr=`echo $line | cut -d' ' -f1`
     minbp=`echo $line | cut -d' ' -f2`
     maxbp=`echo $line | cut -d' ' -f3`

@@ -86,6 +86,5 @@ sort -n $outprefix.tmp > ${outprefix}_overlap_loci.txt
 rm -f $outprefix.tmp $1.tmp
 rm -f ${outprefix}_group_loci.txt
 
-echo "Done"
 echo "Overlapping loci are saved in ${outprefix}_overlap_loci.txt"
 echo "Novel loci are saved in ${outprefix}_novel_loci.txt"

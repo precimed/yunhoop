@@ -26,7 +26,7 @@ rm -f $(dirname $outfile)/trait_loci_list.txt
 cat $fdr_fuma_loci_list | while read line; do
     fn=`echo $line | cut -d' ' -f1`
     trait=`echo $line | cut -d' ' -f2`
-    awk '{print $2,$5,$6,$1"|"$3}' OFS='\t' $fn > $(dirname $outfile)/tmp_trait_$trait.csv
+    head -n -1 $fn | awk '{print $2,$5,$6,$1"|"$3}' OFS='\t' > $(dirname $outfile)/tmp_trait_$trait.csv
     echo "$(dirname $outfile)/tmp_trait_$trait.csv	$trait" >> $(dirname $outfile)/trait_loci_list.txt
 done
 
@@ -49,7 +49,7 @@ cat $fdr_fuma_loci_list | while read line; do
         echo $left $right | cut -d' ' -f2- >> ${outfile%.*}_$trait.tmp
     done
     sort -s -k1,1 ${outfile%.*}_$trait.tmp > ${outfile%.*}_$trait.tmp2
-    tail -n +2 $fn | cut -f1 | sort -s -k1,1 > $fn.tmp
+    head -n -1 $fn | tail -n +2 | cut -f1 | sort -s -k1,1 > $fn.tmp
     rm -f ${outfile%.*}_$trait.tmp
     join -1 1 -2 1 -a 1 $fn.tmp ${outfile%.*}_$trait.tmp2 | sort -n -k1,1 | awk '{a[$1]= a[$1]"; "$0} END {for (item in a ) print item, a[item]}' | sed 's/ ;//' | cut -d' ' -f2- | sort -n -k1,1 | while read i; do
         left=`echo $i | cut -d' ' -f1`
@@ -64,7 +64,7 @@ cat $fdr_fuma_loci_list | while read line; do
     echo "Overlaping_loci" > ${fn%.*}_$trait.txt
     cat ${outfile%.*}_$trait.tmp | cut -d' ' -f2- | awk '{if(NF==1) print ""; else print $0}' >> ${fn%.*}_$trait.txt
     paste -d'	' $fn ${fn%.*}_$trait.txt > ${fn%.*}_$trait.tmp
-    mv ${fn%.*}_$trait.tmp ${fn%.*}_$trait.txt
-    rm -f $fn.tmp ${outfile%.*}_$trait.tmp*
-    echo "See ${fn%.*}_$trait.txt for updated loci table"
+    mv ${fn%.*}_$trait.tmp ${fn%.*}.txt
+    rm -f $fn.tmp ${outfile%.*}_$trait.tmp* ${fn%.*}_$trait.txt
+    echo "See ${fn%.*}.txt for updated loci table"
 done

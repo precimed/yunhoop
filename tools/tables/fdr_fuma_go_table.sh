@@ -24,7 +24,7 @@ fuma_gs_file=$2
 outfile=$3
 
 echo 'genes	credible' > $outfile
-awk '$NF=="Yes" {print $2}' $fdr_fuma_gene_table | sort | uniq | sort > $fdr_fuma_gene_table.tmp
+head -n -1 $fdr_fuma_gene_table | awk '$NF=="Yes" {print $2}' | sort | uniq | sort > $fdr_fuma_gene_table.tmp
 
 head -n1 $fuma_gs_file > $fuma_gs_file.tmp
 grep '^GO_' $fuma_gs_file >> $fuma_gs_file.tmp
@@ -42,5 +42,9 @@ sort -t'	' -k1,1 -k2,2 $outfile.tmp | grep 'Yes$' >> $outfile
 sort -t'	' -k1,1 -k2,2 $outfile.tmp | grep 'No$' >> $outfile
 awk -F '\t' '{print $1,$2,$5,$6,$3,$4,$7,$10,$8}' OFS='\t' $outfile > $outfile.tmp
 mv $outfile.tmp $outfile
+
+n_tot=`tail -n +2 $outfile | wc -l`
+n_cred=`cut -f8 $outfile | grep Yes | wc -l`
+echo $n_tot $n_cred | awk '{print $1"\t\t\t\t\t\t\t"$2"\t"}' >> $outfile
 
 rm -f $fdr_fuma_gene_table.tmp $fuma_gs_file.tmp
