@@ -43,7 +43,7 @@ cat $fdr_fuma_loci_list | while read line; do
     grep "${trait}" $outfile > ${outfile%.*}_$trait.tmp1
     grep "${trait}" $outfile | sed 's/; /\n/' | grep $trait > ${outfile%.*}_$trait.tmp2
     rm -f ${outfile%.*}_$trait.tmp
-    paste -d'|' ${outfile%.*}_$trait.tmp2 ${outfile%.*}_$trait.tmp1 | while read i; do
+    paste -d'|' ${outfile%.*}_$trait.tmp2 ${outfile%.*}_$trait.tmp1 | sed 's/*/+/g' | while read i; do
         left=`echo $i | cut -d'|' -f1`
         right=`echo $i | cut -d'|' -f2 | sed "s/$left//" | sed 's/^; //' | sed 's/; ;/;/g' | sed 's/; $//'`
         echo $left $right | cut -d' ' -f2- >> ${outfile%.*}_$trait.tmp
@@ -62,9 +62,10 @@ cat $fdr_fuma_loci_list | while read line; do
     done
     
     echo "Overlaping_loci" > ${fn%.*}_$trait.txt
-    cat ${outfile%.*}_$trait.tmp | cut -d' ' -f2- | awk '{if(NF==1) print ""; else print $0}' >> ${fn%.*}_$trait.txt
-    paste -d'	' $fn ${fn%.*}_$trait.txt > ${fn%.*}_$trait.tmp
-    mv ${fn%.*}_$trait.tmp ${fn%.*}.txt
+    cat ${outfile%.*}_$trait.tmp | cut -d' ' -f2- | sed 's/+/*/g' | awk '{if(NF==1) print ""; else print $0}' >> ${fn%.*}_$trait.txt
+    cut -f1-27 $fn > $fn.tmp
+    paste -d'	' $fn.tmp ${fn%.*}_$trait.txt > ${fn%.*}_$trait.tmp
+    mv ${fn%.*}_$trait.tmp $fn
     rm -f $fn.tmp ${outfile%.*}_$trait.tmp* ${fn%.*}_$trait.txt
-    echo "See ${fn%.*}.txt for updated loci table"
+    echo "See $fn for updated loci table"
 done

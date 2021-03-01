@@ -23,22 +23,29 @@ fdr_fuma_gene_table=$1
 cpdb_ora_file=$2
 outfile=$3
 
-echo 'genes_input_overlap	credible' > $outfile
+echo 'source	external_id	pathway	p-value	q-value	effective_size	overlap_size	genes_into_overlap	credible' > $outfile
 awk '$NF=="Yes" {print $1}' $fdr_fuma_gene_table | sort | uniq | sort > $fdr_fuma_gene_table.tmp
+rm -f $outfile.tmp2
 tail -n +2 $cpdb_ora_file | cut -f6 | while read id; do
     echo $id | sed 's/; /\n/g' | sort | uniq | sort > $outfile.tmp
+    n_overlap=`cat $outfile.tmp | wc -l`
     if [ `join $fdr_fuma_gene_table.tmp $outfile.tmp | wc -l` -gt 0 ]; then
-        echo $id"	Yes" >> $outfile
+        echo $n_overlap"	"$id"	Yes" >> $outfile.tmp2
     else
-        echo $id"	No" >> $outfile
+        echo $n_overlap"	"$id"	No" >> $outfile.tmp2
     fi
 done
-cut -f1-4 $cpdb_ora_file > $cpdb_ora_file.tmp
-paste $cpdb_ora_file.tmp $outfile > $outfile.tmp
-head -n1 $outfile.tmp > $outfile
-sort -t'	' -k4,4 -k3,3 $outfile.tmp | grep 'Yes$' >> $outfile
-sort -t'	' -k4,4 -k3,3 $outfile.tmp | grep 'No$' >> $outfile
-awk -F '\t' '{print $4,$3,$1,$2,$5,$6}' OFS='\t' $outfile | sed 's/&gamma;/gamma/g' > $outfile.tmp
-mv $outfile.tmp $outfile
+tail -n +2 $cpdb_ora_file | cut -f1-5,9 > $cpdb_ora_file.tmp
+paste $cpdb_ora_file.tmp $outfile.tmp2 > $outfile.tmp
+sort -t'	' -k4,4 -k3,3 $outfile.tmp | grep 'Yes$' > $outfile.tmp2
+sort -t'	' -k4,4 -k3,3 $outfile.tmp | grep 'No$' >> $outfile.tmp2
+awk -F '\t' '{print $4,$5,$3,$1,$2,$6,$7,$8,$9}' OFS='\t' $outfile.tmp2 | sed 's/&gamma;/gamma/g' >> $outfile
 
-rm -f $fdr_fuma_gene_table.tmp $cpdb_ora_file.tmp
+n_source=`tail -n +2 $outfile | cut -f1 | sort | uniq | wc -l`
+n_path=`tail -n +2 $outfile | wc -l`
+n_cred=`cut -f9 $outfile | grep Yes | wc -l`
+sum_effect_genes=`tail -n +2 $outfile | awk -F '\t' '{sum += $6} END {print sum}'`
+sum_overlap=`tail -n +2 $outfile | awk -F '\t' '{sum += $7} END {print sum}'`
+echo $n_source $n_path $sum_effect_genes $sum_overlap $n_cred | awk '{print $1"\t"$2"\t\t\t\t"$3"\t"$4"\t\t"$5}' >> $outfile
+
+rm -f $fdr_fuma_gene_table.tmp $cpdb_ora_file.tmp $outfile.tmp $outfile.tmp2

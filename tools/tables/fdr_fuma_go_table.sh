@@ -23,28 +23,33 @@ fdr_fuma_gene_table=$1
 fuma_gs_file=$2
 outfile=$3
 
-echo 'genes	credible' > $outfile
+echo 'genes	N_overlap	credible' > $outfile
 head -n -1 $fdr_fuma_gene_table | awk '$NF=="Yes" {print $2}' | sort | uniq | sort > $fdr_fuma_gene_table.tmp
 
 head -n1 $fuma_gs_file > $fuma_gs_file.tmp
 grep '^GO_' $fuma_gs_file >> $fuma_gs_file.tmp
+
 tail -n +2 $fuma_gs_file.tmp | cut -f7 | while read id; do
     echo $id | sed 's/:/\n/g' | sort | uniq | sort > $outfile.tmp
+    n_overlap=`cat $outfile.tmp | wc -l`
     if [ `join $fdr_fuma_gene_table.tmp $outfile.tmp | wc -l` -gt 0 ]; then
-        echo $id"	Yes" >> $outfile
+        echo $id"	"$n_overlap"	Yes" >> $outfile
     else
-        echo $id"	No" >> $outfile
+        echo $id"	"$n_overlap"	No" >> $outfile
     fi
 done
 paste $fuma_gs_file.tmp $outfile > $outfile.tmp
 head -n1 $outfile.tmp > $outfile
 sort -t'	' -k1,1 -k2,2 $outfile.tmp | grep 'Yes$' >> $outfile
 sort -t'	' -k1,1 -k2,2 $outfile.tmp | grep 'No$' >> $outfile
-awk -F '\t' '{print $1,$2,$5,$6,$3,$4,$7,$10,$8}' OFS='\t' $outfile > $outfile.tmp
+awk -F '\t' '{print $1,$2,$5,$6,$3,$10,$7,$11,$8}' OFS='\t' $outfile > $outfile.tmp
 mv $outfile.tmp $outfile
 
-n_tot=`tail -n +2 $outfile | wc -l`
+n_cat=`tail -n +2 $outfile | cut -f1 | sort | uniq | wc -l`
+n_gs=`tail -n +2 $outfile | wc -l`
 n_cred=`cut -f8 $outfile | grep Yes | wc -l`
-echo $n_tot $n_cred | awk '{print $1"\t\t\t\t\t\t\t"$2"\t"}' >> $outfile
+sum_genes=`tail -n +2 $outfile | awk -F '\t' '{sum += $5} END {print sum}'`
+sum_overlap=`tail -n +2 $outfile | awk -F '\t' '{sum += $6} END {print sum}'`
+echo $n_cat $n_gs $sum_genes $sum_overlap $n_cred | awk '{print $1"\t"$2"\t\t\t"$3"\t"$4"\t\t"$5"\t"}' >> $outfile
 
-rm -f $fdr_fuma_gene_table.tmp $fuma_gs_file.tmp
+rm -f $fdr_fuma_gene_table.tmp* $fuma_gs_file.tmp

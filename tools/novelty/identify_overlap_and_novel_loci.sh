@@ -22,46 +22,48 @@ if [ $# -lt 3 ]; then
 fi
 
 #-------------------------------------------------------------------------#
-
-if [ ! -f $1 ]; then
-    echo ""
-    echo "NOTE: $1 does't exist"
-    exit 1
-fi
-if [ ! -f $2 ]; then
-    echo ""
-    echo "NOTE: $2 does't exist"
-    exit 1
-fi
-
-if [ `grep ',' $1 | wc -l` -gt 0 ]; then
-    sed 's/,/ /g' $1 > $1.tmp
-    mv $1.tmp $1
-fi
-if [ `grep ',' $2 | wc -l` -gt 0 ]; then
-    sed 's/,/ /g' $2 > $2.tmp
-    mv $2.tmp $2
-fi
-
-if [ `head -n1 $1 | awk '{print NF}'` -ne 3 ] && [ `head -n1 $1 | awk '{print NF}'` -ne 4 ]; then
-    echo ""
-    echo "NOTE: $1 should contains 3 or 4 columns"
-    exit 1
-fi
-if [ `head -n1 $2 | awk '{print NF}'` -ne 3 ] && [ `head -n1 $2 | awk '{print NF}'` -ne 4 ]; then
-    echo ""
-    echo "NOTE: $2 should contains 3 or 4 columns"
-    exit 1
-fi
-
-tr -d '\r' < $1 > $1.tmp
-mv $1.tmp $1
-
-tr -d '\r' < $2 > $2.tmp
-mv $2.tmp $2
-
-files=$1" "$2
+newlocifile=$1
+oldlocifile=$2
 outprefix=$3
+
+if [ ! -f $newlocifile ]; then
+    echo ""
+    echo "NOTE: $newlocifile does't exist"
+    exit 1
+fi
+if [ ! -f $oldlocifile ]; then
+    echo ""
+    echo "NOTE: $oldlocifile does't exist"
+    exit 1
+fi
+
+if [ `grep ',' $newlocifile | wc -l` -gt 0 ]; then
+    sed 's/,/ /g' $newlocifile > $newlocifile.tmp
+    mv $newlocifile.tmp $newlocifile
+fi
+if [ `grep ',' $oldlocifile | wc -l` -gt 0 ]; then
+    sed 's/,/ /g' $oldlocifile > $oldlocifile.tmp
+    mv $oldlocifile.tmp $oldlocifile
+fi
+
+if [ `head -n1 $newlocifile | awk '{print NF}'` -ne 3 ] && [ `head -n1 $newlocifile | awk '{print NF}'` -ne 4 ]; then
+    echo ""
+    echo "NOTE: $newlocifile should contains 3 or 4 columns"
+    exit 1
+fi
+if [ `head -n1 $oldlocifile | awk '{print NF}'` -ne 3 ] && [ `head -n1 $oldlocifile | awk '{print NF}'` -ne 4 ]; then
+    echo ""
+    echo "NOTE: $oldlocifile should contains 3 or 4 columns"
+    exit 1
+fi
+
+tr -d '\r' < $newlocifile > $newlocifile.tmp
+mv $newlocifile.tmp $newlocifile
+
+tr -d '\r' < $oldlocifile > $oldlocifile.tmp
+mv $oldlocifile.tmp $oldlocifile
+
+files=$newlocifile" "$oldlocifile
 rm -f $outprefix.tmp
 cat $files | awk '{print $1,$2,$3}' | sort | uniq | while read line; do
     chr=`echo $line | cut -d' ' -f1`
@@ -79,11 +81,11 @@ mv $outprefix.tmp2 $outprefix.tmp
 
 cat $outprefix.tmp | sort | uniq | awk '{ print length, $0 }' | sort -n -r | cut -d' ' -f2- | sed 's/$/\n/' | sed 's/; /\n/g' > ${outprefix}_group_loci.txt
 
-grep $1 ${outprefix}_group_loci.txt | cut -d' ' -f2- | sed 's/ /	/g' | sort | uniq | sed 's/n$//g' > $outprefix.tmp
-cat $1 | sed 's/ /	/g' | sort > $1.tmp
-diff $1.tmp $outprefix.tmp | grep \< | cut -d' ' -f2- | sort -n > ${outprefix}_novel_loci.txt
+grep $newlocifile ${outprefix}_group_loci.txt | cut -d' ' -f2- | sed 's/ /	/g' | sort | uniq | sed 's/n$//g' > $outprefix.tmp
+cat $newlocifile | sed 's/ /	/g' | sort > $newlocifile.tmp
+diff $newlocifile.tmp $outprefix.tmp | grep \< | cut -d' ' -f2- | sort -n > ${outprefix}_novel_loci.txt
 sort -n $outprefix.tmp > ${outprefix}_overlap_loci.txt
-rm -f $outprefix.tmp $1.tmp
+rm -f $outprefix.tmp $newlocifile.tmp
 rm -f ${outprefix}_group_loci.txt
 
 echo "Overlapping loci are saved in ${outprefix}_overlap_loci.txt"
