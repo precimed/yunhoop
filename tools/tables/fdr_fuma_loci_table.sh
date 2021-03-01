@@ -32,22 +32,24 @@ tag1=`basename $fdr_fuma_snp_table | cut -d'_' -f1`
 tag2=`basename $fdr_fuma_snp_table | cut -d'_' -f3`
 echo "locusnum	CHR	LEAD_SNP	LEAD_BP	MinBP	MaxBP	FDR	A1	A2	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag1}_SE	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	${tag2}_SE	ConcordEffect" > $outfile
 
-sort -s -k3,3 $fdr_clump_loci_file > $fdr_clump_loci_file.sorted
-head -n -1 $fdr_fuma_snp_table | sort -s -k3,3 > $fdr_fuma_snp_table.sorted
+tail -n +2 $fdr_clump_loci_file | sort -s -k3,3 > $fdr_clump_loci_file.sorted
+head -n -1 $fdr_fuma_snp_table | tail -n +2 | cut -f3,10-11,16-22,26-34 | sort -s -k1,1 > $fdr_fuma_snp_table.sorted
 
-join -1 3 -2 3 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | grep -v FDR | awk '{print $2,$3,$1,$4,$5,$6,$7,$16,$17,$22,$23,$24,$25,$26,$27,$28,$32,$33,$34,$35,$36,$37,$38,$39,$40}' OFS='\t' | sort -n -k1,1 >> $outfile
+join -1 3 -2 1 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | awk '{print $2,$3,$1,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS='\t' | sort -n -k1,1 >> $outfile
 
 rm -f $fdr_clump_loci_file.tmp
-for loci in `join -1 3 -2 3 -a 1 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | grep -v locusnum | awk 'NF==7 {print $2}'`; do
-    minbp=`awk -v loci=$loci '$1==loci {print $5}' $fdr_clump_loci_file`
-    maxbp=`awk -v loci=$loci '$1==loci {print $6}' $fdr_clump_loci_file`
-    awk -v loci=$loci -v minbp=$minbp -v maxbp=$maxbp '$1==loci {print $1,$2,$3,$4,minbp,maxbp,$8}' OFS='\t' $fdr_fuma_snp_table.sorted | sort -n -k7,7 | head -n1 >> $fdr_clump_loci_file.tmp
+for loci in `join -1 3 -2 1 -a 1 $fdr_clump_loci_file.sorted $fdr_fuma_snp_table.sorted | awk 'NF==7 {print $2}' | sort -n | uniq`; do
+    if [ `cut -f1 $outfile | sort -n | uniq | grep "^$loci$" | wc -l` -gt 0 ]; then
+        continue
+    fi
+    minbp=`awk -v loci=$loci '$1==loci {print $5}' $fdr_clump_loci_file | head -n1`
+    maxbp=`awk -v loci=$loci '$1==loci {print $6}' $fdr_clump_loci_file | head -n1`
+    awk -v loci=$loci -v minbp=$minbp -v maxbp=$maxbp '$1==loci {print $1,$2,$3,$4,minbp,maxbp,$8}' OFS='\t' $fdr_fuma_snp_table | sort -n -k7,7 | head -n1 >> $fdr_clump_loci_file.tmp
 done
 
 if [ -s $fdr_clump_loci_file.tmp ]; then
     sort -s -k3,3 $fdr_clump_loci_file.tmp > $fdr_clump_loci_file.tmp.sorted
-    rm -f $fdr_clump_loci_file.tmp
-    join -1 3 -2 3 $fdr_clump_loci_file.tmp.sorted $fdr_fuma_snp_table.sorted | grep -v FDR | awk '{print $2,$3,$1,$4,$5,$6,$7,$16,$17,$22,$23,$24,$25,$26,$27,$28,$32,$33,$34,$35,$36,$37,$38,$39,$40}' OFS='\t' | sort -n -k1,1 >> $outfile
+    join -1 3 -2 1 $fdr_clump_loci_file.tmp.sorted $fdr_fuma_snp_table.sorted | awk '{print $2,$3,$1,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25}' OFS='\t' | sort -n -k1,1 >> $outfile
     sort -n -k1,1 $outfile > ${outfile%.*}.tmp
     mv ${outfile%.*}.tmp $outfile
 fi
@@ -174,5 +176,5 @@ fi
 if [ -f ${trait2locifile%.*}.tmp ]; then
     rm ${trait2locifile%.*}.tmp
 fi
-rm -f $fdr_clump_loci_file.sorted $fdr_clump_loci_file.tmp.sorted $fdr_fuma_snp_table.sorted ${outfile%.*}.tmp* ${outfile%.*}_${tag1}_novel_loci.tmp* ${outfile%.*}_${tag2}_novel_loci.tmp*
+rm -f $fdr_clump_loci_file.sorted fdr_clump_loci_file.tmp $fdr_clump_loci_file.tmp.sorted $fdr_fuma_snp_table.sorted ${outfile%.*}.tmp* ${outfile%.*}_${tag1}_novel_loci.tmp* ${outfile%.*}_${tag2}_novel_loci.tmp*
 rm -f ${outfile%.*}_${tag1}_novel_loci.txt ${outfile%.*}_${tag1}_overlap_loci.txt ${outfile%.*}_${tag2}_novel_loci.txt ${outfile%.*}_${tag2}_overlap_loci.txt

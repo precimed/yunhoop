@@ -32,10 +32,9 @@ done
 
 sh $(dirname $0)/../novelty/identify_overlap_loci.sh $(dirname $outfile)/trait_loci_list.txt $(dirname $outfile)/trait_shared_loci.txt
 cut -d' ' -f1,5 $(dirname $outfile)/trait_shared_loci.txt | sed 's/|/ /g' | cut -d' ' -f1-2 | sed ':a;N;/\n$/!s/\n/; /;ta;P;d' > $outfile
+rm -f $(dirname $outfile)/tmp_trait_*.csv $(dirname $outfile)/trait_loci_list.txt $(dirname $outfile)/trait_shared_loci.txt
 echo ""
 echo "Overlaping loci are included in $outfile"
-
-rm -f $(dirname $outfile)/tmp_trait_*.csv $(dirname $outfile)/trait_loci_list.txt $(dirname $outfile)/trait_shared_loci.txt
 
 cat $fdr_fuma_loci_list | while read line; do
     fn=`echo $line | cut -d' ' -f1`
@@ -49,15 +48,16 @@ cat $fdr_fuma_loci_list | while read line; do
         echo $left $right | cut -d' ' -f2- >> ${outfile%.*}_$trait.tmp
     done
     sort -s -k1,1 ${outfile%.*}_$trait.tmp > ${outfile%.*}_$trait.tmp2
-    head -n -1 $fn | tail -n +2 | cut -f1 | sort -s -k1,1 > $fn.tmp
     rm -f ${outfile%.*}_$trait.tmp
+    head -n -1 $fn | tail -n +2 | cut -f1 | sort -s -k1,1 > $fn.tmp
     join -1 1 -2 1 -a 1 $fn.tmp ${outfile%.*}_$trait.tmp2 | sort -n -k1,1 | awk '{a[$1]= a[$1]"; "$0} END {for (item in a ) print item, a[item]}' | sed 's/ ;//' | cut -d' ' -f2- | sort -n -k1,1 | while read i; do
         left=`echo $i | cut -d' ' -f1`
         right=`echo $i | cut -d' ' -f2- | sed "s/; $left/;/g"`
         if [ "$left" = "$right" ]; then
             echo $left >> ${outfile%.*}_$trait.tmp
         else
-            echo $left $right >> ${outfile%.*}_$trait.tmp
+            right2=`echo $right | sed 's/; /\n/g' | sort | uniq | sed ':a;N;/\n$/!s/\n/; /;ta;P;d'`
+            echo $left $right2 >> ${outfile%.*}_$trait.tmp
         fi
     done
     
