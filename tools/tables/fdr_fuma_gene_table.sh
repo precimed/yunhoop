@@ -2,7 +2,7 @@
 #--------------------------- Description ---------------------------------#
 
 # This script tries to generate data for supplementary gene table from
-# PleioFDR/FUMA analysis WITHOUT WARRANTY.
+# pleioFDR/FUMA analysis WITHOUT WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 
@@ -41,11 +41,12 @@ awk '$26=="No"' $outfile.tmp | sed 's/ /	/g' >> $outfile
 cut -f1-5,7-22,24- $outfile > $outfile.tmp
 mv $outfile.tmp $outfile
 
-n_tot=`tail -n +2 $outfile | wc -l`
-n_pos=`cut -f14 $outfile | grep Yes | wc -l`
+n_gene=`tail -n +2 $outfile | cut -f1 | wc -l`
+n_chr=`tail -n +2 $outfile | cut -f3 | sort | uniq | wc -l`
+n_posmap=`cut -f14 $outfile | grep Yes | wc -l`
 n_eqtl=`cut -f17 $outfile | grep Yes | wc -l`
 n_ci=`cut -f22 $outfile | grep Yes | wc -l`
 n_cred=`cut -f24 $outfile | grep Yes | wc -l`
-echo $n_tot $n_pos $n_eqtl $n_ci $n_cred | awk '{print $1"\t\t\t\t\t\t\t\t\t\t\t\t\t"$2"\t\t\t"$3"\t\t\t\t\t"$4"\t\t"$5}' >> $outfile
+echo $n_gene $n_chr $n_posmap $n_eqtl $n_ci $n_cred | awk '{print $1"\t\t"$2"\t\t\t\t\t\t\t\t\t\t\t"$3"\t\t\t"$4"\t\t\t\t\t"$5"\t\t"$6}' >> $outfile
 
 rm -f $outfile.tmp1 $outfile.tmp2

@@ -2,7 +2,7 @@
 #--------------------------- Description ---------------------------------#
 
 # This script tries to generate data for supplementary loci table
-# (PleioFDR+FUMA+SUMSTAT) from PleioFDR/FUMA analysis WITHOUT WARRANTY.
+# (pleioFDR+FUMA+SUMSTAT) from pleioFDR/FUMA analysis WITHOUT WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 
@@ -164,11 +164,12 @@ if [ -s $fdr_clump_loci_file.tmp.sorted ]; then
     done
 fi
 
-n_tot=`tail -n +2 $outfile | wc -l`
+n_loci=`tail -n +2 $outfile | cut -f1 | wc -l`
+n_chr=`tail -n +2 $outfile | cut -f2 | sort | uniq | wc -l`
 n_concord=`cut -f25 $outfile | grep TRUE | wc -l`
 n_trait1=`cut -f26 $outfile | grep Yes | wc -l`
 n_trait2=`cut -f27 $outfile | grep Yes | wc -l`
-echo $n_tot $n_concord $n_trait1 $n_trait2 | awk '{print $1,$2/$1,$3,$4}' OFMT="%.4f" | awk '{print $1,$2*100"%",$3,$4}' | awk '{print $1"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"$2"\t"$3"\t"$4}' >> $outfile
+echo $n_loci $n_chr $n_concord $n_trait1 $n_trait2 | awk '{print $1,$2,$3/$1,$4,$5}' OFMT="%.4f" | awk '{print $1,$2,$3*100"%",$4,$5}' | awk '{print $1"\t"$2"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"$3"\t"$4"\t"$5}' >> $outfile
 
 if [ -f ${trait1locifile%.*}.tmp ]; then
     rm ${trait1locifile%.*}.tmp
@@ -176,5 +177,5 @@ fi
 if [ -f ${trait2locifile%.*}.tmp ]; then
     rm ${trait2locifile%.*}.tmp
 fi
-rm -f $fdr_clump_loci_file.sorted fdr_clump_loci_file.tmp $fdr_clump_loci_file.tmp.sorted $fdr_fuma_snp_table.sorted ${outfile%.*}.tmp* ${outfile%.*}_${tag1}_novel_loci.tmp* ${outfile%.*}_${tag2}_novel_loci.tmp*
+rm -f $fdr_clump_loci_file.sorted $fdr_clump_loci_file.tmp $fdr_clump_loci_file.tmp.sorted $fdr_fuma_snp_table.sorted ${outfile%.*}.tmp* ${outfile%.*}_${tag1}_novel_loci.tmp* ${outfile%.*}_${tag2}_novel_loci.tmp*
 rm -f ${outfile%.*}_${tag1}_novel_loci.txt ${outfile%.*}_${tag1}_overlap_loci.txt ${outfile%.*}_${tag2}_novel_loci.txt ${outfile%.*}_${tag2}_overlap_loci.txt

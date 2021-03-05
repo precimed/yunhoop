@@ -2,7 +2,7 @@
 #--------------------------- Description ---------------------------------#
 
 # This script tries to generate data for supplementary snp table (FUMA+SUMSTAT)
-# based on selected snp subset (fdr,r2) from PleioFDR/FUMA analysis WITHOUT
+# based on selected snp subset (fdr,r2) from pleioFDR/FUMA analysis WITHOUT
 # WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
@@ -14,7 +14,7 @@ if [ $# -lt 9 ]; then
   echo "Usage:     sh fdr_fuma_snp_table.sh fdr_clump_snp_file fdr R2 fuma_snp_file sumstat1 sumstat2 tag1 tag2 outfolder"
   echo "Arguments: fdr_clump_snp_file - fdr clumping snp file"
   echo "           fdr - FDR filter for selecting snps"
-  echo "           R2 - PleioFDR R2 filter for selecting snps"
+  echo "           R2 - pleioFDR R2 filter for selecting snps"
   echo "           fuma_snp_file - fuma annotated snp file"
   echo "           sumstat1 - primary summary statistic file"
   echo "           sumstat2 - secondary summary statistic file"
@@ -86,8 +86,12 @@ join -1 1 -2 1 -a 1 $outfolder/fuma_snps_${tag1}_${tag2}.tmp2 $outfolder/${sm2%%
 cut -f1-12,14- $outfile > $outfile.tmp
 mv $outfile.tmp $outfile
 
-n_tot=`tail -n +2 $outfile | wc -l`
+n_loci=`tail -n +2 $outfile | cut -f1 | sort | uniq | wc -l`
+n_chr=`tail -n +2 $outfile | cut -f2 | sort | uniq | wc -l`
+n_rsid=`tail -n +2 $outfile | cut -f3 | wc -l`
+n_indep=`tail -n +2 $outfile | cut -f5 | sort -s | uniq | wc -l`
+n_near=`tail -n +2 $outfile | cut -f16 | sort -s | uniq | wc -l`
 n_concord=`cut -f34 $outfile | grep TRUE | wc -l`
-echo $n_tot $n_concord | awk '{print $1,$2/$1}' OFMT="%.4f" | awk '{print $1,$2*100"%"}' | awk '{print "\t\t"$1"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"$2}' >> $outfile
+echo $n_loci $n_chr $n_rsid $n_indep $n_near $n_concord | awk '{print $1,$2,$3,$4,$5,$6/$3}' OFMT="%.4f" | awk '{print $1,$2,$3,$4,$5,$6*100"%"}' | awk '{print $1"\t"$2"\t"$3"\t\t"$4"\t\t\t\t\t\t\t\t\t\t\t"$5"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"$6}' >> $outfile
 
 rm -f $outfolder/fdr_clump_snps_${tag1}_${tag2}.txt $outfolder/fuma_snps_${tag1}_${tag2}.txt $outfolder/${sm1%%.*}.txt $outfolder/${sm2%%.*}.txt $outfolder/fuma_snps_${tag1}_${tag2}.tmp $outfolder/fuma_snps_${tag1}_${tag2}.tmp2

@@ -29,9 +29,9 @@ mood_gwas_loci.csv: https://github.com/precimed/yunhoop/blob/master/config/mood_
 ### check_loci_in_gwasc.sh
 
 **Function**
-This script tries to check whether the loci reported by fdr analysis have been registered in gwascatalog with respect to specific phenotype, in which case the loci are considered unnovel.
+This script tries to check whether the loci reported by fdr analysis have been registered in gwascatalog with respect to specific phenotype, in which case the loci are considered to be not novel.
 
-**Usage** ``sh check_loci_in_gwasc.sh fdr_clump_snp_file fuma_gwascatalog_file keywords``
+**Usage** ``sh check_loci_in_gwasc.sh fdr_clump_snp_file fuma_gwascatalog_file keywords outfile``
 
 **Arguments**
 * `fdr_clump_snp_file` - fdr clumping snp file

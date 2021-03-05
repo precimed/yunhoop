@@ -2,7 +2,7 @@
 #--------------------------- Description ---------------------------------#
 
 # This script tries to generate data for supplementary gene ontology gene-set
-# table from PleioFDR/FUMA/ConsensusPDB analysis WITHOUT WARRANTY.
+# table from pleioFDR/FUMA/ConsensusPDB analysis WITHOUT WARRANTY.
 
 # Yunhan Chu (yunhanch@gmail.com), Guy F. L. Hindley
 
