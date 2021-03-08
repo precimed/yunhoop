@@ -20,7 +20,7 @@ if [ $# -lt 4 ]; then
                    8p23 inversion - 8 7200000 12500000; psychiatric disorders and related traits
                    MAPT region - 17 43384864 44913631; neurological disorders e.g. Parkinson.s disease.
                    APOE region - 19 42000000 47000000; Alzheimer.s disease and autism spectrum disorder"
-  echo "Example:   sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 TRAIT1_vs_TRAIT2_input_snps.txt '6 25119106 33854733:8 7200000 12500000'"
+  echo "Example:   sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 TRAIT1_vs_TRAIT2_input_snps.txt '6 25119106 33854733 : 8 7200000 12500000'"
   exit 0
 fi
 #-------------------------------------------------------------------------#
@@ -37,9 +37,9 @@ if [ $# -gt 4 ]; then
     exclude_region_list=$5
     rm -f $outfile.tmp
     echo $exclude_region_list | sed 's/:/\n/g' | while read i; do
-        chr=`echo $i | cut -d' ' -f1`
-        minbp=`echo $i | cut -d' ' -f2`
-        maxbp=`echo $i | cut -d' ' -f3`
+        chr=`echo $i | awk '{print $1}'`
+        minbp=`echo $i | awk '{print $2}'`
+        maxbp=`echo $i | awk '{print $3}'`
         awk -v chr=$chr -v minbp=$minbp -v maxbp=$maxbp '$1==chr && $2>=minbp && $2<=maxbp' $outfile >> $outfile.tmp
     done
     sort $outfile.tmp | uniq | sort -n -k1,1 -k2,2 > $outfile.tmp2

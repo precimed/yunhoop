@@ -15,7 +15,7 @@ then
   echo "Usage:      sh fdr_fuma_trans_loci.sh list_of_loci_files outfile"
   echo "Arguments:  list_of_loci_files - file that includes paths to shared loci file, and fdr_fuma_snp_table, make sure that absolute or relative path to be specified"
   echo "            outfile - output file that contains transdiagnostic loci fdr/fuma results"
-  echo "Example:    sh fdr_fuma_trans_loci.sh mood_psych_shared_loci_conj005.txt mood_psych_conj005_trans_loci.txt"
+  echo "Example:    sh fdr_fuma_trans_loci.sh mood_psych_trans_conj005.txt mood_psych_conj005_trans_loci.txt"
   exit 0
 fi
 

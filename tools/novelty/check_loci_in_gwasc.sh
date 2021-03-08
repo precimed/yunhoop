@@ -28,15 +28,28 @@ gwascatalog_file=$2
 keywords=`echo $3 | sed "s/ //g"`
 outfile=$4
 
-cut -f1-2,6,8 $fdr_clump_snp_file | sort -s -k3,3 > $fdr_clump_snp_file.sorted
+#1) check by chr:pos
+n1=3
+n2=1
+#FDR SNPs
+cut -f1-2,5,6,8 $fdr_clump_snp_file | awk '{print $1,$2,$2":"$3,$4,$5}' OFS='\t' | sort -s -k$n1,$n1 > $fdr_clump_snp_file.sorted
 #FUMA GWAS Catalog
-cut -f5,12-13 $gwascatalog_file | sort -s -k1,1 > $gwascatalog_file.sorted
+cut -f3,4,5,12-13 $gwascatalog_file | awk -F '\t' '{print $1":"$2,$3,$4,$5}' OFS='\t' | sort -s -k$n2,$n2 > $gwascatalog_file.sorted
 #NHGRI-EBI GWAS Catalog
-#cut -f7-8,22 $gwascatalog_file | awk -F '\t' '{print $3,$1,$2}' OFS='\t' | sort -s -k1,1 > $gwascatalog_file.sorted
+#cut -f3-5 $gwascatalog_file | awk -F '\t' '{print $1,$1,$2,$3}' OFS='\t' | sort -s -k$2,$n2 > $gwascatalog_file.sorted
+join -1 $n1 -2 $n2 $fdr_clump_snp_file.sorted $gwascatalog_file.sorted -t '	' | sort -n -k2,2 | awk -F '\t' '{print $2,$3,$7,$8}' OFS='\t' > $fdr_clump_snp_file.gwasc.sorted
 
-join -1 3 -2 1 $fdr_clump_snp_file.sorted $gwascatalog_file.sorted -t '	' | sort -n -k2,2 | awk -F '\t' '{print $2,$3,$5,$6}' OFS='\t' > $fdr_clump_snp_file.gwasc.sorted
+#2) check by rsids
+n1=4
+n2=2
+#FDR SNPs
+cut -f1-2,5,6,8 $fdr_clump_snp_file | awk '{print $1,$2,$2":"$3,$4,$5}' OFS='\t' | sort -s -k$n1,$n1 > $fdr_clump_snp_file.sorted
+#FUMA GWAS Catalog
+cut -f3,4,5,12-13 $gwascatalog_file | awk -F '\t' '{print $1":"$2,$3,$4,$5}' OFS='\t' | sort -s -k$n2,$n2 > $gwascatalog_file.sorted
+#NHGRI-EBI GWAS Catalog
+#cut -f3-5 $gwascatalog_file | awk -F '\t' '{print $1,$1,$2,$3}' OFS='\t' | sort -s -k$2,$n2 > $gwascatalog_file.sorted
+join -1 $n1 -2 $n2 $fdr_clump_snp_file.sorted $gwascatalog_file.sorted -t '	' | sort -n -k2,2 | awk -F '\t' '{print $2,$3,$7,$8}' OFS='\t' >> $fdr_clump_snp_file.gwasc.sorted
 
-n=1
 for k in `echo $keywords | awk -F '|' '{for(i=1;i<=NF;i++){printf " %s", $i}}'`; do
     cp $fdr_clump_snp_file.gwasc.sorted $fdr_clump_snp_file.gwasc.$n.sorted
     for w in `echo $k | awk -F '&' '{for(i=1;i<=NF;i++){printf " %s", $i}}'`; do

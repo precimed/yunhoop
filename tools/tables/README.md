@@ -55,7 +55,7 @@ This script tries to generate a snp list from pleioFDR output for FUMA analysis.
 
 **Example**
 ```
-sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 TRAIT1_vs_TRAIT2_input_snps.txt '6 25119106 33854733:8 7200000 12500000'
+sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 TRAIT1_vs_TRAIT2_input_snps.txt '6 25119106 33854733 : 8 7200000 12500000'
 ```
 
 ### fdr_fuma_snp_table.sh
@@ -186,7 +186,7 @@ This script tries to identify transdiagnostic loci shared across multiple traits
 
 **Example**
 ```
-sh fdr_fuma_trans_loci.sh mood_psych_shared_loci_conj005.txt mood_psych_conj005_trans_loci.txt
+sh fdr_fuma_trans_loci.sh mood_psych_trans_conj005.txt mood_psych_conj005_trans_loci.txt
 
 mood_psych_shared_loci_conj005.txt: https://github.com/precimed/yunhoop/blob/master/config/mood_psych_shared_loci_conj005.txt
 the $shared_loci_file can be grenerated through novelty/identify_overlap_loci.sh
