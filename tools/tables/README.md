@@ -47,7 +47,7 @@ This script tries to generate a snp list from pleioFDR output for FUMA analysis.
 * `fdr` - FDR filter for selecting snps
 * `R2` - pleioFDR R2 filter for selecting snps
 * `outfile` - output file including selected snp list
-* `exclude_region_list` - regions with 'complex LD structure' to be excluded delimited by ':', eg:
+* `exclude_region_list` - regions with 'complex LD structure' to be excluded delimited by '#', eg:
                    MHC - 6 25119106 33854733; all traits. Given the size of the MHC it is probably sensible to exclude for all analyses
                    8p23 inversion - 8 7200000 12500000; psychiatric disorders and related traits
                    MAPT region - 17 43384864 44913631; neurological disorders e.g. Parkinson.s disease.
@@ -55,7 +55,7 @@ This script tries to generate a snp list from pleioFDR output for FUMA analysis.
 
 **Example**
 ```
-sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 TRAIT1_vs_TRAIT2_input_snps.txt '6 25119106 33854733 : 8 7200000 12500000'
+sh fdr_fuma_snp_input.sh conj.result.clump.snps.csv 0.1 0.6 TRAIT1_vs_TRAIT2_input_snps.txt '6 25119106 33854733 # 8 7200000 12500000'
 ```
 
 ### fdr_fuma_snp_table.sh

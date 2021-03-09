@@ -1,9 +1,9 @@
 #==============compile tables===================#
 #--------------fuma input snp list--------------#
-taglist="MOOD PSYCH SCZ BIP DEP ADHD"
+taglist="MOOD PSYCH:SCZ,BIP,DEP,ADHD"
 sumstatlist="UKB_MOOD_2019 # CLOZUK_SCZ_2018_withPGC # PGC_BIP_2019_wave3 # PGC_DEP_2018_with23andMe_noUKBB # PGC_ADHD_2017_EUR"
 pleiofdr_outfolder=$res/pleiofdr/mood_psych
-complex_regions='6 25119106 33854733 : 8 7200000 12500000'
+complex_regions='6 25119106 33854733 # 8 7200000 12500000'
 rev_flag='N'
 #-----------------------------------------------#
 sumstat_folder=$data/sumstat/std
