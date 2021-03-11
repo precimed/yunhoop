@@ -78,6 +78,7 @@ else
 fi
 
 rm -f $outfolder/${tag11}_vs_${tag22}_cond_snps.txt
+rm -f $outfolder/${tag22}_vs_${tag11}_cond_snps.txt
 n=1
 for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
     if [ "$rev_flag" = "Y" ]; then
@@ -116,10 +117,11 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
         continue
     fi
 
-    sh $tab/fdr_fuma_snp_input.sh $conjfdr/conj.result.clump.snps.csv 0.1 0.6 $outfolder/${tag1}_vs_${tag2}_conj_snps.txt "$complex_regions"
-    sh $tab/fdr_fuma_snp_input.sh $condfdr/cond.result.clump.snps.csv 0.1 0.6 $outfolder/${tag1}_vs_${tag2}_cond_snps.txt "$complex_regions"
-    sh $tab/fdr_fuma_snp_input.sh $condfdr2/cond.result.clump.snps.csv 0.1 0.6 $outfolder/${tag2}_vs_${tag1}_cond_snps.txt "$complex_regions"
-    cat $outfolder/${tag1}_vs_${tag2}_cond_snps.txt $outfolder/${tag2}_vs_${tag1}_cond_snps.txt | grep -v snp >> $outfolder/${tag11}_vs_${tag22}_cond_snps.txt
+    sh $(dirname $0)/../tables/fdr_fuma_snp_input.sh $conjfdr/conj.result.clump.snps.csv 0.1 0.6 $outfolder/${tag1}_vs_${tag2}_conj_snps.txt "$complex_regions"
+    sh $(dirname $0)/../tables/fdr_fuma_snp_input.sh $condfdr/cond.result.clump.snps.csv 0.1 0.6 $outfolder/${tag1}_vs_${tag2}_cond_snps.txt "$complex_regions"
+    sh $(dirname $0)/../tables/fdr_fuma_snp_input.sh $condfdr2/cond.result.clump.snps.csv 0.1 0.6 $outfolder/${tag2}_vs_${tag1}_cond_snps.txt "$complex_regions"
+    cat $outfolder/${tag1}_vs_${tag2}_cond_snps.txt | grep -v snp >> $outfolder/${tag11}_vs_${tag22}_cond_snps.txt
+    cat $outfolder/${tag2}_vs_${tag1}_cond_snps.txt | grep -v snp >> $outfolder/${tag22}_vs_${tag11}_cond_snps.txt
     rm -f $outfolder/${tag1}_vs_${tag2}_cond_snps.txt $outfolder/${tag2}_vs_${tag1}_cond_snps.txt
 done
 
@@ -127,4 +129,10 @@ if [ -s $outfolder/${tag11}_vs_${tag22}_cond_snps.txt ]; then
     echo 'snp	pval' > $outfolder/${tag11}_vs_${tag22}_cond_snps.tmp
     cat $outfolder/${tag11}_vs_${tag22}_cond_snps.txt | cut -f1 | sort -s | uniq |  awk '{print $1,1e-10}' OFS='\t' >>  $outfolder/${tag11}_vs_${tag22}_cond_snps.tmp
     mv $outfolder/${tag11}_vs_${tag22}_cond_snps.tmp $outfolder/${tag11}_vs_${tag22}_cond_snps.txt
+fi
+
+if [ -s $outfolder/${tag22}_vs_${tag11}_cond_snps.txt ]; then
+    echo 'snp	pval' > $outfolder/${tag22}_vs_${tag11}_cond_snps.tmp
+    cat $outfolder/${tag22}_vs_${tag11}_cond_snps.txt | cut -f1 | sort -s | uniq |  awk '{print $1,1e-10}' OFS='\t' >>  $outfolder/${tag22}_vs_${tag11}_cond_snps.tmp
+    mv $outfolder/${tag22}_vs_${tag11}_cond_snps.tmp $outfolder/${tag22}_vs_${tag11}_cond_snps.txt
 fi

@@ -53,7 +53,7 @@ join -1 $n1 -2 $n2 $fdr_clump_snp_file.sorted $gwascatalog_file.sorted -t '	' | 
 for k in `echo $keywords | awk -F '|' '{for(i=1;i<=NF;i++){printf " %s", $i}}'`; do
     cp $fdr_clump_snp_file.gwasc.sorted $fdr_clump_snp_file.gwasc.$n.sorted
     for w in `echo $k | awk -F '&' '{for(i=1;i<=NF;i++){printf " %s", $i}}'`; do
-        grep -i $w $fdr_clump_snp_file.gwasc.$n.sorted > $fdr_clump_snp_file.gwasc.$n.sorted.tmp
+        awk -v keyword=$w -F '\t' 'tolower($4)~keyword' $fdr_clump_snp_file.gwasc.$n.sorted > $fdr_clump_snp_file.gwasc.$n.sorted.tmp
         mv $fdr_clump_snp_file.gwasc.$n.sorted.tmp $fdr_clump_snp_file.gwasc.$n.sorted
     done
     n=$((n+1))

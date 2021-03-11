@@ -36,6 +36,7 @@ tag1=$7
 tag2=$8
 outfolder=$9
 
+mkdir -p $outfolder
 outfile=$outfolder/${tag1}_vs_${tag2}_snps.txt
 
 echo "locusnum	CHR	rsID	BP	INDEP_SNP	INDEP_BP	LEAD_SNP	FDR	R2	A1	A2	MAF	gwasP	r2	IndSigSNP	GenomicLocus	nearestGene	dist	func	CADD	RDB	minChrState	commonChrState	posMapFilt	eqtlMapFilt	ciMapFilt	${tag1}_PVAL	${tag1}_Z	${tag1}_BETA	${tag1}_SE	${tag2}_PVAL	${tag2}_Z	${tag2}_BETA	${tag2}_SE	ConcordEffect" > $outfile
