@@ -330,7 +330,7 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
             echo "" >> $snp2gene/${tag11,,}_${tag22,,}_snps_conj.txt
         fi
         if [ "${run_conj_flag:1:1}" = "Y" ]; then
-            gwasc=$fuma_conj/gwascatalog.txt
+            #gwasc=$fuma_conj/gwascatalog.txt
             echo "compiling conj loci table snp2gene/${tag1}_vs_${tag2}_loci.txt ..."
             sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $conjfdr/conj.result.clump.loci.csv $snp2gene/${tag1}_vs_${tag2}_snps.txt $snp2gene/${tag1}_vs_${tag2}_loci.txt $oldloci1 $oldloci2 $gwasc "$keyword1" "$keyword2"
             echo "$snp2gene/${tag1}_vs_${tag2}_loci.txt	$tag" >> $snp2gene/${tag11,,}_${tag22,,}_loci_conj_map.txt
@@ -344,7 +344,6 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
             echo "$tag1 & $tag2" >> snp2gene/${tag11,,}_${tag22,,}_genes_conj.txt
             cat $snp2gene/${tag1}_vs_${tag2}_genes.txt >> $snp2gene/${tag11,,}_${tag22,,}_genes_conj.txt
             echo "" >> $snp2gene/${tag11,,}_${tag22,,}_genes_conj.txt
-
         fi
         if [ "${run_conj_flag:3:1}" = "Y" ]; then
             echo "compiling conj gene ontology table gene2func/${tag1}_vs_${tag2}_go.txt ..."
@@ -371,16 +370,16 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
                 sh $(dirname $0)/../tables/fdr_fuma_snp_table.sh $condfdr2/cond.result.clump.snps.csv 0.1 0.6 $fuma_cond/snps.txt $sumstat_folder/${sm2}.sumstats.gz $sumstat_folder/${sm1}.sumstats.gz $tag2 $tag1 $snp2gene2
             fi
             if [ "${run_cond_flag:1:1}" = "Y" ]; then
-                gwasc=$fuma_cond/gwascatalog.txt
+                #gwasc=$fuma_cond/gwascatalog.txt
                 echo "compiling cond loci table snp2gene2/${tag1}_vs_${tag2}_loci.txt ..."
-                #sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag1}_vs_${tag2}_snps.txt $snp2gene2/${tag1}_vs_${tag2}_loci_2.txt $oldloci1 $oldloci2 $gwasc "$keyword1" "$keyword2"
+                sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag1}_vs_${tag2}_snps.txt $snp2gene2/${tag1}_vs_${tag2}_loci_2.txt $oldloci1 $oldloci2 $gwasc "$keyword1" "$keyword2"
                 echo "$snp2gene2/${tag1}_vs_${tag2}_loci_2.txt	$tag" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map_2.txt
                 echo "$tag1 | $tag2" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_2.txt
                 cat $snp2gene2/${tag1}_vs_${tag2}_loci_2.txt >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_2.txt
                 echo "" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_2.txt
 
                 echo "compiling cond loci table snp2gene2/${tag2}_vs_${tag1}_loci.txt ..."
-                #sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag2}_vs_${tag1}_snps.txt $snp2gene2/${tag2}_vs_${tag1}_loci_2.txt $oldloci2 $oldloci1 $gwasc "$keyword2" "$keyword1"
+                sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag2}_vs_${tag1}_snps.txt $snp2gene2/${tag2}_vs_${tag1}_loci_2.txt $oldloci2 $oldloci1 $gwasc "$keyword2" "$keyword1"
                 echo "$snp2gene2/${tag2}_vs_${tag1}_loci_2.txt	$tag" >> $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map_2.txt
                 echo "$tag2 | $tag1" >> $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_2.txt
                 cat $snp2gene2/${tag2}_vs_${tag1}_loci_2.txt >> $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_2.txt
@@ -403,7 +402,7 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
                 echo "" >> $snp2gene2/${tag22,,}_${tag11,,}_snps_cond.txt
             fi
             if [ "${run_cond_flag:1:1}" = "Y" ]; then
-                gwasc=$fuma_cond_11/gwascatalog.txt
+                #gwasc=$fuma_cond_11/gwascatalog.txt
                 echo "compiling cond loci table snp2gene2/${tag1}_vs_${tag2}_loci.txt ..."
                 sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag1}_vs_${tag2}_snps.txt $snp2gene2/${tag1}_vs_${tag2}_loci.txt $oldloci1 $oldloci2 $gwasc "$keyword1" "$keyword2"
                 echo "$snp2gene2/${tag1}_vs_${tag2}_loci.txt	$tag" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map.txt
@@ -411,7 +410,7 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
                 cat $snp2gene2/${tag1}_vs_${tag2}_loci.txt >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond.txt
                 echo "" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond.txt
 
-                gwasc=$fuma_cond_12/gwascatalog.txt
+                #gwasc=$fuma_cond_12/gwascatalog.txt
                 echo "compiling cond loci table snp2gene2/${tag2}_vs_${tag1}_loci.txt ..."
                 sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag2}_vs_${tag1}_snps.txt $snp2gene2/${tag2}_vs_${tag1}_loci.txt $oldloci2 $oldloci1 $gwasc "$keyword2" "$keyword1"
                 echo "$snp2gene2/${tag2}_vs_${tag1}_loci.txt	$tag" >> $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map.txt
@@ -469,7 +468,7 @@ fi
 
 #-------------------------------conjFDR-------------------------------#
 if [ "${run_conj_flag:1:1}" = "Y" ]; then
-    if [ -s $snp2gene/${tag11,,}_${tag22,,}_loci_conj_map.txt ]; then
+    if [ -s $snp2gene/${tag11,,}_${tag22,,}_loci_conj_map.txt ] && [ `cat $snp2gene/${tag11,,}_${tag22,,}_loci_conj_map.txt | wc -l` -eq $((n_tag-2)) ]; then
         sh $(dirname $0)/../tables/fdr_fuma_loci_overlap.sh $snp2gene/${tag11,,}_${tag22,,}_loci_conj_map.txt $snp2gene/${tag11,,}_${tag22,,}_conj_shared_loci.txt
         rm -f $snp2gene/${tag11,,}_${tag22,,}_loci_conj.txt
         for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
@@ -488,7 +487,7 @@ if [ "${run_conj_flag:1:1}" = "Y" ]; then
 fi
 #-------------------------------condFDR-------------------------------#
 if [ "${run_cond_flag:1:1}" = "Y" ]; then
-    if [ -s $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map.txt ]; then
+    if [ -s $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map.txt ] && [ `cat $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map.txt | wc -l` -eq $((n_tag-2)) ]; then
         sh $(dirname $0)/../tables/fdr_fuma_loci_overlap.sh $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map.txt $snp2gene2/${tag11,,}_${tag22,,}_cond_shared_loci.txt
         rm -f $snp2gene2/${tag11,,}_${tag22,,}_loci_cond.txt
         for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
@@ -504,7 +503,7 @@ if [ "${run_cond_flag:1:1}" = "Y" ]; then
             echo "" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond.txt
         done
     fi
-    if [ -s $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map.txt ]; then
+    if [ -s $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map.txt ] && [ `cat $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map.txt | wc -l` -eq $((n_tag-2)) ]; then
         sh $(dirname $0)/../tables/fdr_fuma_loci_overlap.sh $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map.txt $snp2gene2/${tag22,,}_${tag11,,}_cond_shared_loci.txt
         rm -f $snp2gene2/${tag22,,}_${tag11,,}_loci_cond.txt
         for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
@@ -520,7 +519,7 @@ if [ "${run_cond_flag:1:1}" = "Y" ]; then
             echo "" >> $snp2gene2/${tag22,,}_${tag11,,}_loci_cond.txt
         done
     fi
-    if [ -s $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map_2.txt ]; then
+    if [ -s $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map_2.txt ] && [ `cat $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map_2.txt | wc -l` -eq $((n_tag-2)) ]; then
         sh $(dirname $0)/../tables/fdr_fuma_loci_overlap.sh $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map_2.txt $snp2gene2/${tag11,,}_${tag22,,}_cond_shared_loci_2.txt
         rm -f $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_2.txt
         for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
@@ -536,7 +535,7 @@ if [ "${run_cond_flag:1:1}" = "Y" ]; then
             echo "" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_2.txt
         done
     fi
-    if [ -s $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map_2.txt ]; then
+    if [ -s $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map_2.txt ] && [ `cat $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map_2.txt | wc -l` -eq $((n_tag-2)) ]; then
         sh $(dirname $0)/../tables/fdr_fuma_loci_overlap.sh $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map_2.txt $snp2gene2/${tag22,,}_${tag11,,}_cond_shared_loci_2.txt
         rm -f $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_2.txt
         for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
