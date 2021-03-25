@@ -9,16 +9,16 @@
 
 #-------------------------------------------------------------------------#
 if [ $# -lt 2 ]; then
-  echo "Usage:     sh compile_pleio_tables.sh compile_config run_conj_flag [run_cond_flag]"
-  echo "Arguments: compile_config - compile config file"
-  echo "           run_conj_flag - flag[snps:loci:genes:go:path] to run for conjFDR tables [Y/N]"
-  echo "           run_cond_flag - flag[snps:loci[:genes:go:path]] to run for condFDR tables [Y/N]"
-  echo "                           with 2-bit set, merged fuma set is applied"
-  echo "                           with 5-bit set, seperate fuma sets are applied "
-  echo "Example:   sh compile_pleio_tables.sh ./mood_psych_compile_config.txt YYYYY"
-  echo "           sh compile_pleio_tables.sh ./mood_psych_compile_config.txt YYYYY YY"
-  echo "           sh compile_pleio_tables.sh ./mood_psych_compile_config.txt NYYYY NYYYY"
-  exit 0
+    echo "Usage:     sh compile_pleio_tables.sh compile_config run_conj_flag [run_cond_flag]"
+    echo "Arguments: compile_config - compile config file"
+    echo "           run_conj_flag - flag[snps:loci:genes:go:path] to run for conjFDR tables [Y/N]"
+    echo "           run_cond_flag - flag[snps:loci[:genes:go:path]] to run for condFDR tables [Y/N]"
+    echo "                           with 2-bit set, merged fuma set is applied"
+    echo "                           with 5-bit set, seperate fuma sets are applied "
+    echo "Example:   sh compile_pleio_tables.sh ./mood_psych_compile_config.txt YYYYY"
+    echo "           sh compile_pleio_tables.sh ./mood_psych_compile_config.txt YYYYY YY"
+    echo "           sh compile_pleio_tables.sh ./mood_psych_compile_config.txt NYYYY NYYYY"
+    exit 0
 fi
 #------------------------------------------------------------------------#
 
@@ -28,6 +28,8 @@ run_cond_flag=''
 if [ $# -gt 2 ]; then
     run_cond_flag=$3
 fi
+#GWAS Catalog channel 1: NHGRI-EBI 2: FUMA
+gwasc_channel=2
 
 if [ ${#run_conj_flag} -ne 5 ]; then
     echo "NOTE: please set run_conj_flag as 5-bit"
@@ -330,7 +332,9 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
             echo "" >> $snp2gene/${tag11,,}_${tag22,,}_snps_conj.txt
         fi
         if [ "${run_conj_flag:1:1}" = "Y" ]; then
-            #gwasc=$fuma_conj/gwascatalog.txt
+            if [ "$gwasc_channel" = "2" ]; then
+                gwasc=$fuma_conj/gwascatalog.txt
+            fi
             echo "compiling conj loci table snp2gene/${tag1}_vs_${tag2}_loci.txt ..."
             sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $conjfdr/conj.result.clump.loci.csv $snp2gene/${tag1}_vs_${tag2}_snps.txt $snp2gene/${tag1}_vs_${tag2}_loci.txt $oldloci1 $oldloci2 $gwasc "$keyword1" "$keyword2"
             echo "$snp2gene/${tag1}_vs_${tag2}_loci.txt	$tag" >> $snp2gene/${tag11,,}_${tag22,,}_loci_conj_map.txt
@@ -370,7 +374,9 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
                 sh $(dirname $0)/../tables/fdr_fuma_snp_table.sh $condfdr2/cond.result.clump.snps.csv 0.1 0.6 $fuma_cond/snps.txt $sumstat_folder/${sm2}.sumstats.gz $sumstat_folder/${sm1}.sumstats.gz $tag2 $tag1 $snp2gene2
             fi
             if [ "${run_cond_flag:1:1}" = "Y" ]; then
-                #gwasc=$fuma_cond/gwascatalog.txt
+                if [ "$gwasc_channel" = "2" ]; then
+                    gwasc=$fuma_cond/gwascatalog.txt
+                fi
                 echo "compiling cond loci table snp2gene2/${tag1}_vs_${tag2}_loci.txt ..."
                 sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag1}_vs_${tag2}_snps.txt $snp2gene2/${tag1}_vs_${tag2}_loci_2.txt $oldloci1 $oldloci2 $gwasc "$keyword1" "$keyword2"
                 echo "$snp2gene2/${tag1}_vs_${tag2}_loci_2.txt	$tag" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map_2.txt
@@ -402,7 +408,9 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
                 echo "" >> $snp2gene2/${tag22,,}_${tag11,,}_snps_cond.txt
             fi
             if [ "${run_cond_flag:1:1}" = "Y" ]; then
-                #gwasc=$fuma_cond_11/gwascatalog.txt
+                if [ "$gwasc_channel" = "2" ]; then
+                    gwasc=$fuma_cond_11/gwascatalog.txt
+                fi
                 echo "compiling cond loci table snp2gene2/${tag1}_vs_${tag2}_loci.txt ..."
                 sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag1}_vs_${tag2}_snps.txt $snp2gene2/${tag1}_vs_${tag2}_loci.txt $oldloci1 $oldloci2 $gwasc "$keyword1" "$keyword2"
                 echo "$snp2gene2/${tag1}_vs_${tag2}_loci.txt	$tag" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond_map.txt
@@ -410,7 +418,9 @@ for tag in `echo $taglist | awk -F ':' '{print $2}' | sed 's/,/\n/g'`; do
                 cat $snp2gene2/${tag1}_vs_${tag2}_loci.txt >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond.txt
                 echo "" >> $snp2gene2/${tag11,,}_${tag22,,}_loci_cond.txt
 
-                #gwasc=$fuma_cond_12/gwascatalog.txt
+                if [ "$gwasc_channel" = "2" ]; then
+                    gwasc=$fuma_cond_12/gwascatalog.txt
+                fi
                 echo "compiling cond loci table snp2gene2/${tag2}_vs_${tag1}_loci.txt ..."
                 sh $(dirname $0)/../tables/fdr_fuma_loci_table.sh $condfdr/cond.result.clump.loci.csv $snp2gene2/${tag2}_vs_${tag1}_snps.txt $snp2gene2/${tag2}_vs_${tag1}_loci.txt $oldloci2 $oldloci1 $gwasc "$keyword2" "$keyword1"
                 echo "$snp2gene2/${tag2}_vs_${tag1}_loci.txt	$tag" >> $snp2gene2/${tag22,,}_${tag11,,}_loci_cond_map.txt
