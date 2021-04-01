@@ -34,12 +34,15 @@ chainfile_hg3819=$yc/software/liftover/ucsc/hg38ToHg19.over.chain.gz
 #-------------------------------------------------------------------------#
 run_flag='N'
 if [ $run_flag = "Y" ]; then
+echo "ROUND I"
 cut -f7-8,12-13,22 $gwasc | awk -F '\t' '{print $3,$4,$5,$1,$2}' OFS='\t' | tr -dc '\0-\177' | sed 's/&beta;/Beta /g' > $gwasc.txt
 
 #filter irregular snps with empty chr
 cut -f1-3 $gwasc.txt | awk -F '\t' '$1==""' | grep -v ":" | grep -i -v rs | grep -i -v chr | cut -f3 > $gwasc.tmp
 awk -F '\t' 'NR==FNR {D[$1]++; next} !($3 in D)' $gwasc.tmp $gwasc.txt > $gwasc.tmp2
 mv $gwasc.tmp2 $gwasc.txt
+
+#mark: need to verify if orders of rs delimited with 'x' in line with chr:pos
 
 #clean snps
 cut -f1-3 $gwasc.txt | sed 's/\./:/' | sed 's/\s+//g' | sed 's/ ; /;/g' | sed 's/; /;/g' | sed 's/ ;/;/g' | sed 's/ , /;/g' | sed 's/, /;/g' | sed 's/ ,/;/g' | sed 's/,/;/g' | sed 's/ \/ /,/g' | sed 's/ \//,/g' | sed 's/\/ /,/g' | sed 's/\//,/g' | sed 's/ x /x/gi' > $gwasc.tmp1
@@ -153,6 +156,7 @@ if [ `cut -f1-3 $outfile | grep : | sed 's/hg18//g' | awk '$1":"$2!=$3' | wc -l`
 fi
 rm -f $outfile.tmp*
 
+echo "ROUND II"
 #-------------------------------------------------------------------------#
 #                    Trinn2: use build37_snp_chr_pos to find
 #                    chr:pos for some snps ready for Batch 2
@@ -171,6 +175,7 @@ rm -f $(dirname $outfile)/build37_SNPChrPos_map.tmp
 #-------------------------------------------------------------------------#
 #                    Trinn3: snps with only rs - Batch 1
 #-------------------------------------------------------------------------#
+echo "Batch 1"
 #create RS liftover map
 if [ ! -f $(dirname $outfile)/RS_liftover_map.txt ]; then
     zcat $yc/software/liftover/ncbi/SNPHistory.bcp.gz | grep -i -v activ | cut -f1 > $(dirname $outfile)/SNPHistory.txt
@@ -187,25 +192,27 @@ grep ^- $outfile.tmp2 > $outfile.tmp3
 #update rs with only one merging record (and leave the potential ones with multiple to be checked in the end without chr:pos)
 awk -F '\t' 'NR==FNR {D[$3]++; next} ($1 in D)' $outfile.tmp3 $(dirname $outfile)/RS_liftover_map.txt | sort -s -k1,1 | awk '{print $2,$1}' | uniq -c -f1 | awk '$1==1 {print $3,$2}' OFS='\t' > $(dirname $outfile)/RS_liftover_map.tmp
 join -1 3 -2 1 -a 1 -t '	' $outfile.tmp3 $(dirname $outfile)/RS_liftover_map.tmp | awk -F '\t' '{if(NF==6) print $2,$3,$6,$4,$5; else print $2,$3,$1,$4,$5}' OFS='\t' | sort -s -k3,3 > $outfile.tmp4
-rm -f $(dirname $outfile)/RS_liftover_map.tmp
+#rm -f $(dirname $outfile)/RS_liftover_map.tmp
+
+#mark: search build 37 again
 
 #make hg38 chr:pos snp map
 mkdir -p $(dirname $outfile)/hg38
 if [ ! -f $(dirname $outfile)/hg38/hg38_snps.csv ]; then
-    zcat $hg38_chrpossnp_ref | cut -f2,3,5 | sed 's/^chr//' | awk -F '\t' '{print $1":"($2+1),$3}' > $(dirname $outfile)/hg38/hg38_snps.csv
+    zcat $hg38_chrpossnp_ref | cut -f2-5,11-12,17 | sed 's/^chr//' > $(dirname $outfile)/hg38/hg38_snps.csv
     for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y M; do
         echo "chr"$i
-        grep "^$i:" $(dirname $outfile)/hg38/hg38_snps.csv | sed 's/ /	/' > $(dirname $outfile)/hg38/hg38_snps.chr$i.csv
+        grep "^$i	" $(dirname $outfile)/hg38/hg38_snps.csv | awk -F'\t' '{print $1":"($2+1),$1,$2,$3,$4,$5,$6,$7,$1":"$2}' OFS='\t' > $(dirname $outfile)/hg38/hg38_snps.chr$i.csv
     done
 fi
 
 #make hg19 chr:pos snp map
 mkdir -p $(dirname $outfile)/hg19
 if [ ! -f $(dirname $outfile)/hg19/hg19_snps.csv ]; then
-    zcat $hg19_chrpossnp_ref | cut -f2,3,5 | sed 's/^chr//' | awk -F '\t' '{print $1":"($2+1),$3}' > $(dirname $outfile)/hg19/hg19_snps.csv
+    zcat $hg19_chrpossnp_ref | cut -f2-5,11-12,17 | sed 's/^chr//' > $(dirname $outfile)/hg19/hg19_snps.csv
     for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y M; do
         echo "chr"$i
-        grep "^$i:" $(dirname $outfile)/hg19/hg19_snps.csv | sed 's/ /	/' > $(dirname $outfile)/hg19/hg19_snps.chr$i.csv
+        grep "^$i	" $(dirname $outfile)/hg19/hg19_snps.csv | awk -F'\t' '{print $1":"($2+1),$1,$2,$3,$4,$5,$6,$7,$1":"$2}' OFS='\t' > $(dirname $outfile)/hg19/hg19_snps.chr$i.csv
     done
 fi
 
@@ -231,7 +238,6 @@ grep ^- $outfile.tmp4 | cut -f3 | sort -s | uniq | while read rs; do
     fi
 
     #extract chr info
-    chr=''
     chr=`grep chr $(dirname $outfile)/rs/$rs | grep : | grep GRCh | head -n1 | cut -d'>' -f2 | cut -d: -f1 | sed 's/chr//' | sed 's/MT/M/'`
     if [ "$chr" = "" ]; then
         chr=`grep chr $(dirname $outfile)/rs/$rs | grep : | grep '()' | head -n1 | cut -d'>' -f2 | cut -d: -f1 | sed 's/chr//' | sed 's/MT/M/'`
@@ -239,11 +245,11 @@ grep ^- $outfile.tmp4 | cut -f3 | sort -s | uniq | while read rs; do
     if [ "$chr" = "" ]; then
         if [ `grep 'N.*_' $(dirname $outfile)/rs/$rs | grep : | grep GRCh | wc -l` -gt 0 ]; then
             chr=`grep 'chr ' $(dirname $outfile)/rs/$rs | grep -v \>  | sed 's/^.*chr//' | head -n1 | awk '{print $1}'`
-            pos38=`grep "$rs$" $(dirname $outfile)/hg38/hg38_snps.chr$chr.csv | cut -f1 | cut -d: -f2`
+            pos38=`grep "$rs	" $(dirname $outfile)/hg38/hg38_snps.chr$chr.csv | cut -f1 | cut -d: -f2`
             if [ "$pos38" != "" ]; then
                 echo $rs'	'$chr'	'$pos38 >> $(dirname $outfile)/hg38_snp_map.txt
             fi
-            pos19=`grep "$rs$" $(dirname $outfile)/hg19/hg19_snps.chr$chr.csv | cut -f1 | cut -d: -f2`
+            pos19=`grep "$rs	" $(dirname $outfile)/hg19/hg19_snps.chr$chr.csv | cut -f1 | cut -d: -f2`
             if [ "$pos19" != "" ]; then
                 echo $rs'	'$chr'	'$pos19 >> $(dirname $outfile)/hg19_snp_map.txt
             fi
@@ -265,10 +271,10 @@ grep ^- $outfile.tmp4 | cut -f3 | sort -s | uniq | while read rs; do
     hg38id=''
     hg19id=''
     if [ "$chr" != "" ]; then
-        hg38id=`grep "$rs$" $(dirname $outfile)/hg38/hg38_snps.chr$chr.csv | cut -f1`
+        hg38id=`grep "$rs	" $(dirname $outfile)/hg38/hg38_snps.chr$chr.csv | cut -f1`
     else
         for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y M; do
-            hg38id=`grep "$rs$" $(dirname $outfile)/hg38/hg38_snps.chr$i.csv | cut -f1`
+            hg38id=`grep "$rs	" $(dirname $outfile)/hg38/hg38_snps.chr$i.csv | cut -f1`
             if [ "$hg38id" != "" ]; then
                 break
             fi
@@ -280,10 +286,10 @@ grep ^- $outfile.tmp4 | cut -f3 | sort -s | uniq | while read rs; do
         echo $rs'	'$chr'	'$pos >> $(dirname $outfile)/hg38_snp_map.txt
     fi
     if [ "$chr" != "" ]; then
-        hg19id=`grep "$rs$" $(dirname $outfile)/hg19/hg19_snps.chr$chr.csv | cut -f1`
+        hg19id=`grep "$rs	" $(dirname $outfile)/hg19/hg19_snps.chr$chr.csv | cut -f1`
     else
         for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y M; do
-            hg19id=`grep "$rs$" $(dirname $outfile)/hg19/hg19_snps.chr$i.csv | cut -f1`
+            hg19id=`grep "$rs	" $(dirname $outfile)/hg19/hg19_snps.chr$i.csv | cut -f1`
             if [ "$hg19id" != "" ]; then
                 break
             fi
@@ -298,15 +304,13 @@ done
 
 #remove withdrawn and unfound rs
 awk -F '\t' 'NR==FNR {D[$1]++; next} !($3 in D)' $(dirname $outfile)/withdrawn_and_unfound_rs.txt $outfile.tmp4 > $outfile.tmp5
-#update snps with hg19 chr:pos
-join -1 3 -2 1 -a 1 -t '	' $outfile.tmp5 $(dirname $outfile)/hg19_snp_map.txt | awk -F '\t' '{if (NF==7) print $6":"$7,$6,$7,$1,$4,$5,$6":"$7,"-"; else print $2":"$3,$2,$3,$1,$4,$5,"-","-"}' OFS='\t' > $outfile.tmp6
-#update snps with hg38 chr:pos (OUTPUT: CHR:POS CHR POS RS STUDY TRAIT Hg19 Hg38)
-join -1 4 -2 1 -a 1 -t '	' $outfile.tmp6 $(dirname $outfile)/hg38_snp_map.txt | awk -F '\t' '{if (NF==10) print $9":"$10,$9,$10,$1,$5,$6,$7,$9":"$10; else print $2,$3,$4,$1,$5,$6,$7,$8}' OFS='\t' | sort | uniq | sort -n -k2,2 -k3,3 > $outfile.tmp7
+#update snps with hg38 chr:pos
+join -1 3 -2 1 -a 1 -t '	' $outfile.tmp5 $(dirname $outfile)/hg38_snp_map.txt | awk -F '\t' '{if (NF==7) print $6,$7,$1,$4,$5,"-",$6":"$7; else print $2,$3,$1,$4,$5,"-","-"}' OFS='\t' > $outfile.tmp6
+#update snps with hg19 chr:pos (OUTPUT: CHR:POS CHR POS RS STUDY TRAIT Hg19 Hg38)
+join -1 3 -2 1 -a 1 -t '	' $outfile.tmp6 $(dirname $outfile)/hg19_snp_map.txt | awk -F '\t' '{if (NF==9) print $8,$9,$1,$4,$5,$8":"$9,$7; else print $2,$3,$1,$4,$5,$6,$7}' OFS='\t' | awk -F '\t' '{print $1":"$2,$1,$2,$3,$4,$5,$6,$7}' OFS='\t' | sort | uniq | sort -n -k2,2 -k3,3 > $outfile.tmp7
 
-echo "#------------------------------------------------------------------------#"
-echo "ROUND I"
 if [ `awk -F '\t' '$7=="-" && $8=="-" {print $4}' $outfile.tmp7 | wc -l` -gt 0 ]; then
-    echo "snps lack with both hg19 and hg38 chr:pos"
+    echo "snps_lack_both_hg19_and_hg38_chr:pos"
     awk -F '\t' '$7=="-" && $8=="-" {print $4}' $outfile.tmp7
 fi
 n_snps=`grep ^- $outfile.tmp4 | cut -f3 | wc -l`
@@ -322,11 +326,33 @@ n_hg1938_lack=`awk -F '\t' '$7=="-" && $8=="-" {print $4}' $outfile.tmp7 | wc -l
 echo "n_snps:$n_snps(uniq:$n_uniq_snps) n_withdraw|unfound:$((n_snps-n_snps_remain))(uniq:$n_withdraw_unfound) n_hg19_map(uniq:$n_hg19_map) n_hg38_map(uniq:$n_hg38_map)"
 echo "n_snps_remain:$n_snps_remain(uniq:$n_uniq_snps_remain) n_hg19_lack:$n_hg19_lack(uniq:$((n_uniq_snps-n_withdraw_unfound-n_hg19_map))) n_hg38_lack:$n_hg38_lack(uniq:$((n_uniq_snps-n_withdraw_unfound-n_hg38_map))) n_hg19_hg38_lack:$n_hg1938_lack"
 echo "#-----------------------------------------------------------------------#"
+fi
 
+#run UCSC liftOver for positional map (hg19->hg38)
+awk -F '\t' '$7!="-" {print $7,$1}' OFS='\t' $outfile.tmp7 | sed 's/:/ /' | awk '{print "chr"$1,$2,($2+1),$3}' > ${outfile%.*}.hg19_0.txt
+awk -F '\t' '$8!="-" {print $8,$1}' OFS='\t' $outfile.tmp7 | sed 's/:/ /' | awk '{print "chr"$1,$2,($2+1),$3}' > ${outfile%.*}.hg38_0.txt
+sort -s -k1,1 $outfile.tmp7 >  $outfile.tmp8
+if [ -s ${outfile%.*}.hg19_0.txt ]; then
+    $liftover ${outfile%.*}.hg19_0.txt $chainfile_hg1938 ${outfile%.*}_liftover_hg19_out_hg38_0.bed ${outfile%.*}_liftover_unlifted_hg19_0.bed
+    cat ${outfile%.*}_liftover_hg19_out_hg38_0.bed | awk '{print $4,$2}' OFS='\t' | sort | uniq | sort -s -k1,1 > ${outfile%.*}_liftover_hg19_to_hg38_map_0.txt
+    join -1 1 -2 1 -a 1 $outfile.tmp8 ${outfile%.*}_liftover_hg19_to_hg38_map_0.txt -t '	' | awk -F '\t' '{if(NF==9) print $1,$2,$3,$4,$5,$6,$7,$8,"-",$2":"$9; else print $1,$2,$3,$4,$5,$6,$7,$8,"-","-"}' OFS='\t' > $outfile.tmp9
+    mv $outfile.tmp9 $outfile.tmp8
+fi
+if [ -s ${outfile%.*}.hg38_0.txt ]; then
+    $liftover ${outfile%.*}.hg38_0.txt $chainfile_hg3819 ${outfile%.*}_liftover_hg38_out_hg19_0.bed ${outfile%.*}_liftover_unlifted_hg38_0.bed
+    cat ${outfile%.*}_liftover_hg38_out_hg19_0.bed | awk '{print $4,$2}' OFS='\t' | sort | uniq | sort -s -k1,1 > ${outfile%.*}_liftover_hg38_to_hg19_map_0.txt
+    join -1 1 -2 1 -a 1 $outfile.tmp8 ${outfile%.*}_liftover_hg38_to_hg19_map_0.txt -t '	' | awk -F '\t' '{if(NF==11) print $1,$2,$3,$4,$5,$6,$7,$8,$2":"$11,$10; else print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10}' OFS='\t' > $outfile.tmp9
+    mv $outfile.tmp9 $outfile.tmp8
+fi
+
+awk -F '\t' '{if ($7==$9&&$8==$10) print $1,$2,$3,$4,$5,$6,$7,$8; else if($7=="-"&&$8!="-"&&$9!="-") print $1,$2,$3,$4,$5,$6,$9,$8; else if($7!="-") print $1,$2,$3,$4,$5,$6,$7,$10}' OFS='\t' $outfile.tmp8 > $outfile.tmp9
+
+run_flag_2='N'
+if [ $run_flag_2 = "Y" ]; then
 #-------------------------------------------------------------------------#
 #                    Trinn4: snps with chr:pos - Batch 2
 #-------------------------------------------------------------------------#
-echo "ROUND II"
+echo "Batch 2"
 #snps with chr:pos
 tail -n +2 $outfile | grep -v ^- | awk '$3!~/hg18/ && $3!~/hg19/' | awk -F '\t' '{print $1":"$2,$1,$2,$3,$4,$5,"-",$1":"$2}' OFS='\t' > $outfile.2.tmp
 tail -n +2 $outfile | grep -v ^- | awk '$3~/hg18/' | sed 's/hg18//' | awk -F '\t' '{print $1":"$2,$1,$2,$3,$4,$5,"-","-"}' OFS='\t' >> $outfile.2.tmp
@@ -527,6 +553,7 @@ if [ -s ${outfile%.*}.hg38.txt ]; then
             mv $outfile.2.tmp5 $outfile.2.tmp4
         fi
     fi
+fi
 fi
 #rm -f $outfile*.tmp*
 #-------------------------------------------------------------------------#
