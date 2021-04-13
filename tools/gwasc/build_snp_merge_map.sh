@@ -26,13 +26,13 @@ split -l $chunksize --numeric-suffixes=1 --suffix-length=$len --additional-suffi
 for i in ${target_merge_map_file%.*}_A_*.txt; do
     suffix=${i%.*}
     suffix=${suffix##*_}
-    echo "#!/bin/sh" > $(dirname $target_merge_map_file)/build_dbsnp_merge_map_$suffix.sh
-    echo "sh $(dirname $0)/track_snp_merge.sh $dbsnp_merge_map_file $i ${target_merge_map_file%.*}_B_$suffix.txt &> ${target_merge_map_file%.*}_A_$suffix.log" >> $(dirname $target_merge_map_file)/build_dbsnp_merge_map_$suffix.sh
-    chmod +x $(dirname $target_merge_map_file)/build_dbsnp_merge_map_$suffix.sh
+    echo "#!/bin/sh" > $(dirname $target_merge_map_file)/build_snp_merge_map_$suffix.sh
+    echo "sh $(dirname $0)/track_snp_merge.sh $dbsnp_merge_map_file $i ${target_merge_map_file%.*}_B_$suffix.txt &> ${target_merge_map_file%.*}_A_$suffix.log" >> $(dirname $target_merge_map_file)/build_snp_merge_map_$suffix.sh
+    chmod +x $(dirname $target_merge_map_file)/build_snp_merge_map_$suffix.sh
     if [ $checksize -le 200 ]; then
-        sh $(dirname $target_merge_map_file)/build_dbsnp_merge_map_$suffix.sh
+        sh $(dirname $target_merge_map_file)/build_snp_merge_map_$suffix.sh
     else
-        srun -A $account -n1 --mem 4G -t 12:00:00 $(dirname $target_merge_map_file)/build_dbsnp_merge_map_$suffix.sh &
+        srun -A $account -n1 --mem 4G -t 12:00:00 $(dirname $target_merge_map_file)/build_snp_merge_map_$suffix.sh &
     fi
 done
 wait
@@ -43,7 +43,7 @@ join -1 1 -2 1 -t '	' ${target_merge_map_file%.*}_B.txt ${target_merge_map_file%
 
 if [ `cat ${target_merge_map_file%.*}_A*.log | wc -l` -eq 0 ]; then
     rm -f ${target_merge_map_file%.*}_A*.txt ${target_merge_map_file%.*}_B*.txt
-    rm -f $(dirname $target_merge_map_file)/build_dbsnp_merge_map_*.sh
+    rm -f $(dirname $target_merge_map_file)/build_snp_merge_map_*.sh
     rm -f ${target_merge_map_file%.*}_A*.log
     mv ${target_merge_map_file%.*}_2.txt ${target_merge_map_file%.*}.txt
 fi

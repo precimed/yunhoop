@@ -69,7 +69,7 @@ def printPlacements(info, chrom):
                                                spdi['inserted_sequence'],
                                                spdi['position'],
                                                spdi['seq_id'])
-                    ln = "\t".join([chrom, str(pos+1), ref, alt, assembly_name, chrom+':'+str(pos+1)])
+                    ln = "\t".join([chrom+':'+str(pos+1), chrom, str(pos+1), ref, alt, assembly_name, seq_id, chrom+':'+str(pos)])
                     break
     return ln
 
