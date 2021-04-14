@@ -8,7 +8,7 @@
 # (c) 2020-2022 NORMENT, UiO
 
 #-------------------------------------------------------------------------#
-if [ $# -lt 4 ]; then
+if [ $# -lt 3 ]; then
   echo "Usage: sh build_dbsnp_maps.sh dbsnp_folder account flag_chr flag_misc"
   echo "Arguments: dbsnp_folder - top folder to place dbsnp data"
   echo "           account - slurm account for srun"
@@ -19,15 +19,19 @@ if [ $# -lt 4 ]; then
 fi
 #-------------------------------------------------------------------------#
 
+account=nn9114k
 dbsnp_folder=$1
-account=$2
-flag_chr=$3
-flag_misc=$4
+flag_chr=$2
+flag_misc=$3
 
 #------------------------build misc maps------------------------#
 if [ "$flag_misc" = "Y" ]; then
-    python $(dirname $0)/rsjson_misc_map.py -m $dbsnp_folder/refsnp-merged.json -n $dbsnp_folder/refsnp-nosnppos.json -u $dbsnp_folder/refsnp-unsupported.json -w $dbsnp_folder/refsnp-withdrawn.json -o $dbsnp_folder/refsnp-other.json -t $dbsnp_folder &> $dbsnp_folder/refsnp_misc.log &
+    echo "#!/bin/sh" > $dbsnp_folder/json/build_dbsnp_misc_map.sh
+    echo "python $(dirname $0)/rsjson_misc_map.py -m $dbsnp_folder/json/refsnp-merged.json -n $dbsnp_folder/json/refsnp-nosnppos.json -u $dbsnp_folder/json/refsnp-unsupported.json -w $dbsnp_folder/json/refsnp-withdrawn.json -o $dbsnp_folder/json/refsnp-other.json -t $dbsnp_folder/json &> $dbsnp_folder/json/refsnp_misc.log" >> $dbsnp_folder/json/build_dbsnp_misc_map.sh
+    chmod +x $dbsnp_folder/json/build_dbsnp_misc_map.sh
+    srun -A $account -n1 --mem 4G -t 5:00:00 $dbsnp_folder/json/build_dbsnp_misc_map.sh &
 fi
+wait
 #---------------------------------------------------------------#
 
 #------------------------build chr maps------------------------#
@@ -43,7 +47,6 @@ if [ "$flag_chr" = "Y" ]; then
         srun -A $account -n1 --mem 4G -t 3:00:00 $dbsnp_folder/vcf/build_dbsnp_map_b$id.sh &
     done
     wait
-fi
 
     for id in 37 38; do
         for ((i=1; i<=27; i++)); do
@@ -74,7 +77,6 @@ fi
         done
     done
 
-if [ "$flag_chr" = "Y" ]; then
     for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
         chr=$i
         if [ $i = "MT" ]; then
@@ -85,6 +87,13 @@ if [ "$flag_chr" = "Y" ]; then
         chmod +x $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh
         srun -A $account -n1 --mem 4G -t 5:00:00 $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh &
     done
-fi
     wait
+
+    if [ `cat $dbsnp_folder/json/dbsnp_chr*.log | wc -l` -eq 0 ]; then
+        rm -f $dbsnp_folder/json/dbsnp_chr*.log
+        rm -f $dbsnp_folder/json/build_dbsnp_map_chr*.sh
+    fi
+    rm -f $dbsnp_folder/vcf/build_dbsnp_map_b*.sh
+    rm -f $dbsnp_folder/vcf/build_dbsnp_map_b*_chr*.sh
+fi
 #---------------------------------------------------------------#

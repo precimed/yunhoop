@@ -12,9 +12,9 @@
 if [ $# -lt 3 ]; then
   echo "Usage: sh compile_gwasc.sh gwasc build_id outfile"
   echo "Arguments: gwasc - gwascatalog"
-  echo "           dbsnp_map_folder - folder including built dbsnp maps"
+  echo "           dbsnp_map_folder - top folder to hold built dbsnp maps within json and vcf subfolders"
   echo "           outfile - output file"
-  echo "Example: sh compile_gwasc.sh gwas_catalog_v1.0-associations_e100_r2021-03-25.tsv $lf/ncbi/b153/json gwas_catalog_v1.0-associations_e100_r2021-03-25.csv"
+  echo "Example: sh compile_gwasc.sh gwas_catalog_v1.0-associations_e100_r2021-03-25.tsv $lf/ncbi/b153 gwas_catalog_v1.0-associations_e100_r2021-03-25.csv"
   exit 0
 fi
 #-------------------------------------------------------------------------#
@@ -168,8 +168,7 @@ fi
 rm -f $gwasc.tmp*
 rm -f $outfile.tmp*
 
-cut -f3 $outfile | grep rs > ${outfile%.*}_rs.txt
-fi
+cut -f3 $outfile | grep rs | sort | uniq > ${outfile%.*}_rs.txt
 
 #chunksize=15000
 #awk -F '\t' '$7=="0" || $7=="2"' $outfile | cut -f3 | sort | uniq > ${outfile%.*}_A.txt
@@ -181,4 +180,15 @@ fi
 #    sh $(dirname $0)/search_dbsnp.sh $i ../dbsnp . $suffix &> ${i%.*}.log &
 #done
 
-sh $(dirname $0)/build_dbsnp_merge_map.sh $dbsnp_map_folder/dbsnp_merge_map.txt ${outfile%.*}_rs.txt $(dirname $outfile)/gwasc_dbsnp_merge_map.txt
+if [ ! -f $dbsnp_map_folder/json/dbsnp_merge_map.txt ]; then
+    sh $(dirname $0)/../dbsnp/build_dbsnp_maps.sh $dbsnp_map_folder N Y
+    cat $dbsnp_map_folder/json/dbsnp_unsupported.txt $dbsnp_map_folder/json/dbsnp_withdrawn.txt $dbsnp_map_folder/json/dbsnp_nosnppos.txt > $dbsnp_map_folder/json/dbsnp_unavailable.txt
+fi
+sh $(dirname $0)/build_snp_merge_map.sh $dbsnp_map_folder/json/dbsnp_merge_map.txt ${outfile%.*}_rs.txt $(dirname $outfile)/gwasc_dbsnp_merge_map.txt
+awk -F '\t' 'NR==FNR {D[$1]++; next} !($1 in D)' $(dirname $outfile)/gwasc_dbsnp_merge_map.txt ${outfile%.*}_rs.txt > ${outfile%.*}_rs_merged.txt
+cut -f2 $(dirname $outfile)/gwasc_dbsnp_merge_map.txt | sort | uniq >> ${outfile%.*}_rs_merged.txt
+awk -F '\t' 'NR==FNR {D[$1]++; next} !($1 in D)' $dbsnp_map_folder/json/dbsnp_unavailable.txt ${outfile%.*}_rs_merged.txt > ${outfile%.*}_rs_avail.txt
+diff ${outfile%.*}_rs_merged.txt ${outfile%.*}_rs_avail.txt | grep \< | awk '{print $2}' > ${outfile%.*}_rs_unavail.txt
+fi
+sh $(dirname $0)/build_snp_map.sh $dbsnp_map_folder ${outfile%.*}_rs_avail.txt $(dirname $outfile)
+
