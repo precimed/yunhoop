@@ -189,6 +189,10 @@ awk -F '\t' 'NR==FNR {D[$1]++; next} !($1 in D)' $(dirname $outfile)/gwasc_dbsnp
 cut -f2 $(dirname $outfile)/gwasc_dbsnp_merge_map.txt | sort | uniq >> ${outfile%.*}_rs_merged.txt
 awk -F '\t' 'NR==FNR {D[$1]++; next} !($1 in D)' $dbsnp_map_folder/json/dbsnp_unavailable.txt ${outfile%.*}_rs_merged.txt > ${outfile%.*}_rs_avail.txt
 diff ${outfile%.*}_rs_merged.txt ${outfile%.*}_rs_avail.txt | grep \< | awk '{print $2}' > ${outfile%.*}_rs_unavail.txt
-fi
 sh $(dirname $0)/build_snp_map.sh $dbsnp_map_folder ${outfile%.*}_rs_avail.txt $(dirname $outfile)
+fi
 
+awk -F '\t' 'NR==FNR {D[$1]++; next} !($3 in D)' $(dirname $outfile)/gwasc_dbsnp_merge_map.txt $outfile > ${outfile%.*}_merged.txt
+awk -F '\t' 'NR==FNR {D[$1]++; next} ($3 in D)' $(dirname $outfile)/gwasc_dbsnp_merge_map.txt $outfile | sort -s -k3,3 > ${outfile%.*}.tmp
+sort -s -k1,1 $(dirname $outfile)/gwasc_dbsnp_merge_map.txt > $(dirname $outfile)/gwasc_dbsnp_merge_map.tmp
+join -1 3 -2 1 -t '	' ${outfile%.*}.tmp $(dirname $outfile)/gwasc_dbsnp_merge_map.tmp | awk -F '\t' '{if(NF>7) print $2,$3,$8,$4,$5,$6,$7; else print $2,$3,$1,$4,$5,$6,$7}' OFS='\t' > ${outfile%.*}.tmp2
