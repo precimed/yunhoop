@@ -96,9 +96,9 @@ for x in tags:
     output_fn.close()
 
 #3) other refsnps (output: refsnp	refsnp/merged_snp	refsnp)
-if os.path.isfile(args.out_map_folder+'/dbsnp_other_map.txt'):
-    os.remove(args.out_map_folder+'/dbsnp_other_map.txt')
-output_fn = open(args.out_map_folder+'/dbsnp_other_map.txt', 'a')
+if os.path.isfile(args.out_map_folder+'/dbsnp_other.txt'):
+    os.remove(args.out_map_folder+'/dbsnp_other.txt')
+output_fn = open(args.out_map_folder+'/dbsnp_other.txt', 'a')
 input_fn = args.other_fn
 with open(input_fn, 'r') as json_file:
     for line in json_file:
