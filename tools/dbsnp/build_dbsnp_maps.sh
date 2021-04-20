@@ -77,22 +77,22 @@ if [ "$flag_chr" = "Y" ]; then
         done
     done
 
-    for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
-        chr=$i
-        if [ $i = "MT" ]; then
-            chr='M'
-        fi
-        echo "#!/bin/sh" > $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh
-        echo "python $(dirname $0)/rsjson_chr_map.py -i $dbsnp_folder/json/refsnp-chr$i.json.bz2 -c $chr -o $dbsnp_folder/json/dbsnp_chr$chr.txt &> $dbsnp_folder/json/dbsnp_chr$chr.log" >> $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh
-        chmod +x $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh
-        srun -A $account -n1 --mem 4G -t 5:00:00 $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh &
-    done
+    #for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
+    #    chr=$i
+    #    if [ $i = "MT" ]; then
+    #        chr='M'
+    #    fi
+    #    echo "#!/bin/sh" > $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh
+    #    echo "python $(dirname $0)/rsjson_chr_map.py -i $dbsnp_folder/json/refsnp-chr$i.json.bz2 -c $chr -o $dbsnp_folder/json/dbsnp_chr$chr.txt &> $dbsnp_folder/json/dbsnp_chr$chr.log" >> $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh
+    #    chmod +x $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh
+    #    srun -A $account -n1 --mem 4G -t 5:00:00 $dbsnp_folder/json/build_dbsnp_map_chr$chr.sh &
+    #done
     wait
 
-    if [ `cat $dbsnp_folder/json/dbsnp_chr*.log | wc -l` -eq 0 ]; then
-        rm -f $dbsnp_folder/json/dbsnp_chr*.log
-        rm -f $dbsnp_folder/json/build_dbsnp_map_chr*.sh
-    fi
+    #if [ `cat $dbsnp_folder/json/dbsnp_chr*.log | wc -l` -eq 0 ]; then
+    #    rm -f $dbsnp_folder/json/dbsnp_chr*.log
+    #    rm -f $dbsnp_folder/json/build_dbsnp_map_chr*.sh
+    #fi
     rm -f $dbsnp_folder/vcf/build_dbsnp_map_b*.sh
     rm -f $dbsnp_folder/vcf/build_dbsnp_map_b*_chr*.sh
 fi

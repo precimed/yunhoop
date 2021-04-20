@@ -23,9 +23,9 @@ gwasc=$1
 dbsnp_map_folder=$2
 outfile=$3
 
-run_flag='Y'
+run_flag='N'
 if [ "$run_flag" = 'Y' ]; then
-cut -f7-8,12-13,22 $gwasc | awk -F '\t' '{print $3,$4,$5,$1,$2}' OFS='\t' | tr -dc '\0-\177' | sed 's/&beta;/Beta /g' > $gwasc.txt
+cut -f7-8,12-13,22-24 $gwasc | awk -F '\t' '{print $3,$4,$5,$6,$7,$1,$2}' OFS='\t' | tr -dc '\0-\177' | sed 's/&beta;/Beta /g' > $gwasc.txt
 
 #filter snps with irregular ids
 echo "filter irregular snps with empty chr"
@@ -35,30 +35,32 @@ mv $gwasc.tmp2 $gwasc.txt
 
 #clean snp ids
 echo "clean snps"
-cut -f1-3 $gwasc.txt | sed 's/\./:/' | sed 's/\s+//g' | sed 's/ ; /;/g' | sed 's/; /;/g' | sed 's/ ;/;/g' | sed 's/ , /;/g' | sed 's/, /;/g' | sed 's/ ,/;/g' | sed 's/,/;/g' | sed 's/ \/ /,/g' | sed 's/ \//,/g' | sed 's/\/ /,/g' | sed 's/\//,/g' | sed 's/ x /x/gi' > $gwasc.tmp1
-cut -f4-5 $gwasc.txt > $gwasc.tmp2
+head -n1 $gwasc.txt > $gwasc.tmp
+tail -n +2 $gwasc.txt | cut -f1-4 | sed 's/\./:/' | sed 's/\s+//g' | sed 's/ ; /;/g' | sed 's/; /;/g' | sed 's/ ;/;/g' | sed 's/ , /;/g' | sed 's/, /;/g' | sed 's/ ,/;/g' | sed 's/,/;/g' | sed 's/ \/ /,/g' | sed 's/ \//,/g' | sed 's/\/ /,/g' | sed 's/\//,/g' | sed 's/ x /x/gi' > $gwasc.tmp1
+tail -n +2 $gwasc.txt | cut -f5 | cut -d'_' -f1 | cut -d'-' -f1 | sed 's/[a-zA-Z]$//' | sed 's/^/rs/' | sed 's/^rs$/-/' > $gwasc.tmp2
+tail -n +2 $gwasc.txt | cut -f6-7 > $gwasc.tmp3
 for((i=0; i<=22; i++)); do
-    sed "s/chr${i}: /chr${i}:/gi" $gwasc.tmp1 > $gwasc.tmp3
-    sed "s/chr${i}_/chr${i}:/gi" $gwasc.tmp3 > $gwasc.tmp1
+    sed "s/chr${i}: /chr${i}:/gi" $gwasc.tmp1 > $gwasc.tmp10
+    sed "s/chr${i}_/chr${i}:/gi" $gwasc.tmp10 > $gwasc.tmp1
 done
-sed 's/chr://gi' $gwasc.tmp1 | sed 's/chr//gi' | sed 's/che//gi' | sed 's/ch//gi' | sed 's/		.*psy_/		/gi' | sed 's/hg18_/hg18/gi' > $gwasc.tmp3
-paste -d'	' $gwasc.tmp3 $gwasc.tmp2 > $gwasc.tmp
+sed 's/chr://gi' $gwasc.tmp1 | sed 's/chr//gi' | sed 's/che//gi' | sed 's/ch//gi' | sed 's/		.*psy_/		/gi' | sed 's/hg18_/hg18/gi' > $gwasc.tmp10
+paste -d'	' $gwasc.tmp10 $gwasc.tmp2 $gwasc.tmp3 >> $gwasc.tmp
+rm -f $gwasc.tmp1* $gwasc.tmp2 $gwasc.tmp3
 
 #process records with only single or multiple ids (chr:pos or rs)
 echo "process records with only single or multiple ids"
 awk -F '\t' '$1==""' $gwasc.tmp | awk -F '\t' '$3!~/*/ && $3!~/im/' > $gwasc.tmp1
 rm -f $gwasc.tmp10
-
 cut -f3- $gwasc.tmp1 | while read line; do
-    study=`echo "$line" | cut -f2-3`
+    rest=`echo "$line" | cut -f2-5`
     echo "$line" | cut -f1 | sed 's/;/\n/g' | sed 's/,/\n/g' | sed 's/x/\n/g' | while read id; do
         snp=`echo $id | sed 's/del-//gi' | cut -d'_' -f1 | cut -d'-' -f1 | cut -d':' -f1-2 | sed 's/[a-zA-Z]$//'`
         if [ `echo $snp | grep ':' | wc -l` -gt 0 ]; then
             chr=`echo $snp | cut -d':' -f1`
             pos=`echo $snp | cut -d':' -f2`
-            echo $chr'	'$pos'	'$snp'	'$id'	'"$study" >> $gwasc.tmp10
+            echo $chr'	'$pos'	'$snp'	'$id'	'"$rest" >> $gwasc.tmp10
         else
-            echo '-	-	'$snp'	'$id'	'"$study" >> $gwasc.tmp10
+            echo '-	-	'$snp'	'$id'	'"$rest" >> $gwasc.tmp10
         fi
     done 
 done
@@ -70,7 +72,7 @@ awk -F '\t' '$1!="" && $3!~/;/ && $3!~/,/ && $3!~/x/' $gwasc.tmp | tail -n +2 | 
 cut -f1-2 $gwasc.tmp2 > $gwasc.tmp21
 cut -f3 $gwasc.tmp2 | sed 's/del-//gi'| sed 's/[a-zA-Z]$//' > $gwasc.tmp22
 cut -f3 $gwasc.tmp2 > $gwasc.tmp23
-cut -f4-5 $gwasc.tmp2 > $gwasc.tmp24
+cut -f4-7 $gwasc.tmp2 > $gwasc.tmp24
 paste -d'	' $gwasc.tmp21 $gwasc.tmp22 $gwasc.tmp23 $gwasc.tmp24 > $gwasc.tmp2
 
 #process records associated with multiple snps with chr:pos and ids
@@ -81,7 +83,7 @@ cat $gwasc.tmp3 | while read line; do
     echo "$line" | cut -f1 | sed 's/;/\n/g' | sed 's/,/\n/g' | sed 's/x/\n/g' > $gwasc.tmp31
     echo "$line" | cut -f2 | sed 's/;/\n/g' | sed 's/,/\n/g' | sed 's/x/\n/g' > $gwasc.tmp32
     echo "$line" | cut -f3 | sed 's/;/\n/g' | sed 's/,/\n/g' | sed 's/x/\n/g' | awk '$1~/:/ || $1~/rs/' > $gwasc.tmp33
-    study=`echo "$line" | cut -f4-5`
+    rest=`echo "$line" | cut -f4-7`
     n1=`cat $gwasc.tmp31 | wc -l`
     n2=`cat $gwasc.tmp32 | wc -l`
     n3=`cat $gwasc.tmp33 | wc -l`
@@ -99,7 +101,7 @@ cat $gwasc.tmp3 | while read line; do
     if [ $n3 -eq $n1 ] && [ `echo "$line" | cut -f3 | grep 'x' | wc -l` -gt 0 ]; then
         rm -f $gwasc.tmp34
         for ((i=1; i<=$n3; i++)); do
-            echo "$study" >> $gwasc.tmp34
+            echo "$rest" >> $gwasc.tmp34
         done
     # b) single chr:pos with multiple merging rs
     elif [ $n1 -eq 1 ] && [ $n3 -gt $n1 ] && [ `echo "$line" | cut -f3 | grep ',' | wc -l` -gt 0 ]; then
@@ -109,7 +111,7 @@ cat $gwasc.tmp3 | while read line; do
         done
         rm -f $gwasc.tmp34
         for ((i=1; i<=$n3; i++)); do
-            echo "$study" >> $gwasc.tmp34
+            echo "$rest" >> $gwasc.tmp34
         done
     else
     #    paste -d':' $gwasc.tmp31 $gwasc.tmp32 > $gwasc.tmp34
@@ -131,7 +133,7 @@ cat $gwasc.tmp3 | while read line; do
         for((i=1; i<=$n3; i++)); do
             echo '-' >> $gwasc.tmp31
             echo '-' >> $gwasc.tmp32
-            echo "$study" >> $gwasc.tmp34
+            echo "$rest" >> $gwasc.tmp34
         done
     fi
     sed 's/del-//gi' $gwasc.tmp33 | sed 's/[a-zA-Z]$//' > $gwasc.tmp35
@@ -147,7 +149,7 @@ echo "update chr:pos of records with only rs in light of available snps"
 tail -n +2 $outfile | grep -v ^- > $outfile.tmp
 cut -f1-3 $outfile.tmp | sort -s -k3,3 | uniq > $outfile.tmp1
 grep ^- $outfile | sort -s -k3,3 > $outfile.tmp2
-join -1 3 -2 3 -a 1 -t '	' $outfile.tmp2 $outfile.tmp1 | awk -F '\t' '{if (NF>6) print $7,$8,$1,$4,$5,$6; else print $2,$3,$1,$4,$5,$6}' OFS='\t' >> $outfile.tmp
+join -1 3 -2 3 -a 1 -t '	' $outfile.tmp2 $outfile.tmp1 | awk -F '\t' '{if (NF>8) print $9,$10,$1,$4,$5,$6,$7,$8; else print $2,$3,$1,$4,$5,$6,$7,$8}' OFS='\t' >> $outfile.tmp
 
 #create initial set (OUTPUT: CHR POS SNP ID STUDY TRAIT)
 echo "compile initial set"
@@ -155,9 +157,9 @@ head -n1 $outfile > $outfile.tmp2
 grep -v ^- $outfile.tmp | awk -F '\t' '$1~/^[0-9]+$/' | sort -n -k1,1 -k2,2 >> $outfile.tmp2
 grep -v ^- $outfile.tmp | awk -F '\t' '$1!~/^[0-9]+$/' | sort -k1,1 >> $outfile.tmp2
 grep ^- $outfile.tmp >> $outfile.tmp2
-echo 'CHR	POS	SNP	ID	STUDY	TRAIT	FLAG' > $outfile
+echo 'CHR	POS	SNP	ID	MERGED	CURRENT_ID	STUDY	TRAIT	FLAG' > $outfile
 #flag: 0-snp with only rs; 1-snp with chr:pos; 2-snp with both rs and chr:pos
-awk -F '\t' '{if($1=="-") print $1,$2,$3,$4,$5,$6,"0"; else if($1!="-"&&$3~/:/) print $1,$2,$3,$4,$5,$6,"1"; else if($1!="-"&&$3~/rs/) print $1,$2,$3,$4,$5,$6,"2"; else print $1,$2,$3,$4,$5,$6,"x"}' OFS='\t' $outfile.tmp2 >> $outfile
+awk -F '\t' '{if($1=="-") print $1,$2,$3,$4,$5,$6,$7,$8,"0"; else if($1!="-"&&$3~/:/) print $1,$2,$3,$4,$5,$6,$7,$8,"1"; else if($1!="-"&&$3~/rs/) print $1,$2,$3,$4,$5,$6,$7,$8,"2"; else print $1,$2,$3,$4,$5,$6,$7,$8,"x"}' OFS='\t' $outfile.tmp2 >> $outfile
 
 if [ `cut -f1-3 $outfile | grep : | sed 's/hg18//g' | awk '$1":"$2!=$3' | wc -l` -gt 0 ]; then
     echo "NOTE: SNPs with inconsistent chr:pos" 
@@ -171,11 +173,10 @@ if [ `cut -f1-3 $outfile | grep '-' | grep ':' | wc -l` -gt 0 ]; then
 fi
 rm -f $gwasc.tmp*
 rm -f $outfile.tmp*
-
 cut -f3 $outfile | grep rs | sort | uniq > ${outfile%.*}_rs.txt
 fi
 
-run_flag='N'
+run_flag='Y'
 if [ "$run_flag" = 'Y' ]; then
 #chunksize=15000
 #awk -F '\t' '$7=="0" || $7=="2"' $outfile | cut -f3 | sort | uniq > ${outfile%.*}_A.txt
@@ -187,10 +188,13 @@ if [ "$run_flag" = 'Y' ]; then
 #    sh $(dirname $0)/search_dbsnp.sh $i ../dbsnp . $suffix &> ${i%.*}.log &
 #done
 
-#build dbSNP maps
+#build dbSNP misc maps
 if [ ! -f $dbsnp_map_folder/json/dbsnp_merge_map.txt ]; then
     sh $(dirname $0)/../dbsnp/build_dbsnp_maps.sh $dbsnp_map_folder N Y
     cat $dbsnp_map_folder/json/dbsnp_unsupported.txt $dbsnp_map_folder/json/dbsnp_withdrawn.txt $dbsnp_map_folder/json/dbsnp_nosnppos.txt > $dbsnp_map_folder/json/dbsnp_unavailable.txt
+fi
+#build dbSNP chr maps
+if [ ! -f $dbsnp_map_folder/vcf/dbsnp_b38_chr1.txt]; then
 fi
 
 #build gwasc snp merge map (based on gwasc rs list and dbsnp_merge_map.txt)
@@ -210,5 +214,5 @@ sh $(dirname $0)/build_snp_map.sh $dbsnp_map_folder ${outfile%.*}_rs_avail.txt $
 awk -F '\t' 'NR==FNR {D[$1]++; next} !($3 in D)' $(dirname $outfile)/gwasc_snp_merge_map.txt $outfile > ${outfile%.*}_merged.txt
 awk -F '\t' 'NR==FNR {D[$1]++; next} ($3 in D)' $(dirname $outfile)/gwasc_snp_merge_map.txt $outfile | sort -s -k3,3 > ${outfile%.*}.tmp
 sort -s -k1,1 $(dirname $outfile)/gwasc_snp_merge_map.txt > $(dirname $outfile)/gwasc_snp_merge_map.tmp
-join -1 3 -2 1 -t '	' ${outfile%.*}.tmp $(dirname $outfile)/gwasc_snp_merge_map.tmp | awk -F '\t' '{if(NF>7) print $2,$3,$8,$4,$5,$6,$7; else print $2,$3,$1,$4,$5,$6,$7}' OFS='\t' > ${outfile%.*}.tmp2
+join -1 3 -2 1 -t '	' ${outfile%.*}.tmp $(dirname $outfile)/gwasc_snp_merge_map.tmp | awk -F '\t' '{if(NF>9) print $2,$3,$10,$1,$4,$5,$6,$7,$8,$9; else print $2,$3,$1,$1,$4,$5,$6,$7,$8,$9}' OFS='\t' > ${outfile%.*}.tmp2
 fi
