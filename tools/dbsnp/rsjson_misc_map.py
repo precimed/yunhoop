@@ -38,6 +38,31 @@ import argparse
 import json
 import bz2
 
+def printPlacements(info):
+    '''
+    rs genomic positions
+    '''
+
+    ln=''
+    for alleleinfo in info:
+        # has top level placement (ptlp) and assembly info
+        placement_annot = alleleinfo['placement_annot']
+        if alleleinfo['is_ptlp'] and \
+                len(placement_annot['seq_id_traits_by_assembly']) > 0:
+            assembly_name = placement_annot[
+                'seq_id_traits_by_assembly'][0]['assembly_name']
+
+            for a in alleleinfo['alleles']:
+                spdi = a['allele']['spdi']
+                if spdi['inserted_sequence'] != spdi['deleted_sequence']:
+                    (ref, alt, pos, seq_id) = (spdi['deleted_sequence'],
+                                               spdi['inserted_sequence'],
+                                               spdi['position'],
+                                               spdi['seq_id'])
+                    ln = "\t".join([str(pos), ref, alt, assembly_name, seq_id])
+                    break
+    return ln
+
 parser = argparse.ArgumentParser(description='Example of parsing misc JSON RefSNP Data')
 parser.add_argument('-m', dest='merged_fn', required=True,
                     help='Merged snp json file')
@@ -104,10 +129,16 @@ with open(input_fn, 'r') as json_file:
     for line in json_file:
         rs_obj = json.loads(line)
 
-        output_fn.write('rs'+rs_obj['refsnp_id']+'\t'+'rs'+rs_obj['refsnp_id']+'\n')
-        if 'dbsnp1_merges' in rs_obj:
-            dbsnp1_merges = rs_obj['dbsnp1_merges']
-            if len(dbsnp1_merges) > 0:
-                for i in range(len(dbsnp1_merges)):
-                    output_fn.write('rs'+dbsnp1_merges[i]['merged_rsid']+'\t'+'rs'+rs_obj['refsnp_id']+'\n')
+        #output_fn.write('rs'+rs_obj['refsnp_id']+'\t'+'rs'+rs_obj['refsnp_id']+'\n')
+        #if 'dbsnp1_merges' in rs_obj:
+        #    dbsnp1_merges = rs_obj['dbsnp1_merges']
+        #    if len(dbsnp1_merges) > 0:
+        #        for i in range(len(dbsnp1_merges)):
+        #            output_fn.write('rs'+dbsnp1_merges[i]['merged_rsid']+'\t'+'rs'+rs_obj['refsnp_id']+'\n')
+
+        if 'primary_snapshot_data' in rs_obj:
+            primary_snapshot_data = rs_obj['primary_snapshot_data']
+            ln = printPlacements(primary_snapshot_data['placements_with_allele'])
+            if ln == '': continue
+            output_fn.write('rs'+rs_obj['refsnp_id'] + '\t' + ln+'\n')
     output_fn.close()

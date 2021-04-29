@@ -2,13 +2,20 @@ account=nn9114k
 dbsnp_merge_map_file=$1
 target_rs_list=$2
 target_merge_map_file=$3
+chunksize=$4
 
 awk -F '\t' 'NR==FNR {D[$1]++; next} ($1 in D)' $target_rs_list $dbsnp_merge_map_file | cut -f1-2 > $target_merge_map_file
 awk -F '\t' 'NR==FNR {D[$1]++; next} !($2 in D)' $dbsnp_merge_map_file $target_merge_map_file | cut -f1-2 > ${target_merge_map_file%.*}_B_0.txt
+if [ `cat ${target_merge_map_file%.*}_B_0.txt | wc -l` -eq `cat $target_merge_map_file | wc -l` ]; then
+    rm -f ${target_merge_map_file%.*}_B_0.txt
+    echo "ready"
+    exit 0
+fi
 awk -F '\t' 'NR==FNR {D[$1]++; next} ($2 in D)' $dbsnp_merge_map_file $target_merge_map_file | cut -f1-2 > ${target_merge_map_file%.*}_A.txt
-
 checksize=`cat ${target_merge_map_file%.*}_A.txt | wc -l`
-chunksize=1000
+if [ -z $chunksize ]; then
+    chunksize=1000
+fi
 chunknum=`echo $checksize $chunksize | awk '{print $1/$2}' | awk '{print $1=$1==int($1)?int($1):int($1)+1}'`
 if [ $chunknum -lt 10 ]; then
     len=1
@@ -21,6 +28,7 @@ elif [ $chunknum -ge 1000 ] && [ $chunknum -le 9999 ]; then
 else
     len=5
 fi
+echo $checksize $chunksize $len
 
 split -l $chunksize --numeric-suffixes=1 --suffix-length=$len --additional-suffix=".txt" ${target_merge_map_file%.*}_A.txt ${target_merge_map_file%.*}_A_
 for i in ${target_merge_map_file%.*}_A_*.txt; do
@@ -45,5 +53,8 @@ if [ `cat ${target_merge_map_file%.*}_A*.log | wc -l` -eq 0 ]; then
     rm -f ${target_merge_map_file%.*}_A*.txt ${target_merge_map_file%.*}_B*.txt
     rm -f $(dirname $target_merge_map_file)/build_snp_merge_map_*.sh
     rm -f ${target_merge_map_file%.*}_A*.log
-    mv ${target_merge_map_file%.*}_2.txt ${target_merge_map_file%.*}.txt
+    mv ${target_merge_map_file%.*}_2.txt ${target_merge_map_file%.*}_full.txt
 fi
+
+#only take first entry of each merging group
+#cut -f1 ${target_merge_map_file%.*}_full.txt | uniq | while read snp; do awk -v snp=$snp '$1==snp {print; exit}' ${target_merge_map_file%.*}.txt; done

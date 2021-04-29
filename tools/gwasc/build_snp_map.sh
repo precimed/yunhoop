@@ -38,8 +38,8 @@ for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y M T W; do
 done
 wait
 
+rm -f $target_map_folder/build_snp_map_B_b*_chr*.sh
 #rm -f $target_map_folder/build_snp_map_A_chr*.sh
-#rm -f $target_map_folder/build_snp_map_B_b*_chr*.sh
 #rm -f $target_map_folder/gwasc_dbsnp_diff_full.txt
 #for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y; do
 #    join -1 1 -2 1 -t'	' $target_map_folder/gwasc_A_b38_dbsnp_chr$i.txt $target_map_folder/gwasc_B_b38_dbsnp_chr$i.txt | awk -F '\t' '$2!=$10' > $target_map_folder/gwasc_b38_dbsnp_chr$i.txt
