@@ -8,6 +8,7 @@ def printPlacements(info, chrom, assemb):
 
     ln=''
     for alleleinfo in info:
+        if 'NC_' not in alleleinfo['seq_id']: continue
         # has top level placement (ptlp) and assembly info
         placement_annot = alleleinfo['placement_annot']
         #if alleleinfo['is_ptlp'] and \
@@ -25,7 +26,7 @@ def printPlacements(info, chrom, assemb):
                                                spdi['seq_id'])
                     if assemb in assembly_name:
                         ln = "\t".join([chrom+':'+str(pos+1), chrom, str(pos), ref, alt, assembly_name, seq_id, chrom+':'+str(pos)])
-                        break
+                        return ln
     return ln
 
 parser = argparse.ArgumentParser(description='Example of parsing JSON RefSNP Data')
@@ -42,6 +43,6 @@ with open(args.input_fn) as f:
     if 'primary_snapshot_data' in rs_obj:
         primary_snapshot_data = rs_obj['primary_snapshot_data']
         ln = printPlacements(primary_snapshot_data['placements_with_allele'],args.chrom, 'GRCh38')
-        print('rs'+rs_obj['refsnp_id']+'\t'+ln+'\t'+primary_snapshot_data['variant_type'].upper())
+        print('rs'+rs_obj['refsnp_id']+'\t'+ln+'\t'+primary_snapshot_data['variant_type'].upper()+'\t'+primary_snapshot_data['anchor'])
         ln = printPlacements(primary_snapshot_data['placements_with_allele'],args.chrom, 'GRCh37')
-        print('rs'+rs_obj['refsnp_id']+'\t'+ln+'\t'+primary_snapshot_data['variant_type'].upper())
+        print('rs'+rs_obj['refsnp_id']+'\t'+ln+'\t'+primary_snapshot_data['variant_type'].upper()+'\t'+primary_snapshot_data['anchor'])

@@ -74,7 +74,7 @@ if [ "$flag_chr_B" = "Y" ]; then
                 seq_id="NC_"${seq_id:1:6}
             fi
             echo "#!/bin/sh" > $dbsnp_folder/vcf/build_dbsnp_map_b${id}_chr$chr.sh
-            echo "grep ^$seq_id $dbsnp_folder/vcf/dbsnp_b$id.txt | awk -v chr=$chr -F '\t' '{print "'$3,chr":"$2,chr,$2,$4,$5,$1,$6}'"' OFS='\t' > $dbsnp_folder/vcf/dbsnp_b${id}_chr$chr.txt" >> $dbsnp_folder/vcf/build_dbsnp_map_b${id}_chr$chr.sh
+            echo "grep ^$seq_id $dbsnp_folder/vcf/dbsnp_b$id.txt | awk -v chr=$chr -F '\t' '{"'if($6=="SNV" || $6=="MNV" || ($6=="INDEL" && $5==".")) print $3,chr":"$2,chr,$2,$4,$5,$1,$6,chr":"$2; else print $3,chr":"$2,chr,$2,$4,$5,$1,$6,chr":"($2+1)}'"' OFS='\t' > $dbsnp_folder/vcf/dbsnp_b${id}_chr$chr.txt" >> $dbsnp_folder/vcf/build_dbsnp_map_b${id}_chr$chr.sh
             chmod +x $dbsnp_folder/vcf/build_dbsnp_map_b${id}_chr$chr.sh
             srun -A $account -n1 --mem 4G -t 3:00:00 $dbsnp_folder/vcf/build_dbsnp_map_b${id}_chr$chr.sh &
         done
@@ -103,5 +103,4 @@ if [ `cat $dbsnp_folder/json/dbsnp_chr*.log | wc -l` -eq 0 ]; then
 fi
 rm -f $dbsnp_folder/json/build_dbsnp_misc_map.sh
 rm -f $dbsnp_folder/vcf/build_dbsnp_map_b*.sh
-rm -f $dbsnp_folder/vcf/build_dbsnp_map_b*_chr*.sh
 #---------------------------------------------------------------#

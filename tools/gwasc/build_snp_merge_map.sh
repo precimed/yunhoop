@@ -8,7 +8,7 @@ awk -F '\t' 'NR==FNR {D[$1]++; next} ($1 in D)' $target_rs_list $dbsnp_merge_map
 awk -F '\t' 'NR==FNR {D[$1]++; next} !($2 in D)' $dbsnp_merge_map_file $target_merge_map_file | cut -f1-2 > ${target_merge_map_file%.*}_B_0.txt
 if [ `cat ${target_merge_map_file%.*}_B_0.txt | wc -l` -eq `cat $target_merge_map_file | wc -l` ]; then
     rm -f ${target_merge_map_file%.*}_B_0.txt
-    echo "ready"
+    echo "merge ready"
     exit 0
 fi
 awk -F '\t' 'NR==FNR {D[$1]++; next} ($2 in D)' $dbsnp_merge_map_file $target_merge_map_file | cut -f1-2 > ${target_merge_map_file%.*}_A.txt
